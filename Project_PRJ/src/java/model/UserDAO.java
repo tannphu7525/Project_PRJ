@@ -8,6 +8,6 @@ package model;
  *
  * @author admin
  */
-public class UserDTO {
+public class UserDAO {
     
 }

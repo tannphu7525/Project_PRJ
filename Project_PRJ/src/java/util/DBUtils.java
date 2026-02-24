@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class DBUtils {
 
-    private static final String DB_NAME = "PRJ30x_DB1";
+    private static final String DB_NAME = "PRJ_MovieBooking";
     private static final String DB_USER_NAME = "sa";
     private static final String DB_PASSWORD = "12345";
     
