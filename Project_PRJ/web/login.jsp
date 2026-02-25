@@ -1,3 +1,9 @@
+<%-- 
+    Document   : login.jsp
+    Created on : Feb 25, 2026, 10:16:08 PM
+    Author     : admin
+--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="javax.servlet.http.Cookie"%>
 <%
@@ -25,26 +31,31 @@
         <title>Đăng nhập</title>
     </head>
     <body>
-        <h2>Đăng nhập</h2>
+        <h2>Đăng nhập hoặc Đăng kí</h2>
 
         <%-- Hiển thị thông báo lỗi nếu có --%>
-        <% if (msg != null && !msg.isEmpty()) { %>
-            <p style="color: red;"><%= msg %></p>
-        <% } %>
+        <% if (msg != null && !msg.isEmpty()) {%>
+        <p style="color: red;"><%= msg%></p>
+        <% }%>
 
         <form action="MainController" method="POST">
             <input type="hidden" name="action" value="login"/>
 
             <label>Username:</label>
-            <input type="text" name="username" value="<%= savedUsername %>" required/><br/>
+            <input type="text" name="username" value="<%= savedUsername%>" required/><br/>
 
             <label>Password:</label>
             <input type="password" name="password" value="" required/><br/>
 
             <label>Ghi nhớ đăng nhập</label>
-            <input type="checkbox" name="remember" value="ON" <%= isRemembered ? "checked" : "" %>/><br/>
+            <input type="checkbox" name="remember" value="ON" <%= isRemembered ? "checked" : ""%>/><br/>
 
-            <input type="submit" value="ĐĂNG NHẬP"/>
+            <input type="submit" value="ĐĂNG NHẬP"/> 
         </form>
+
+        <form action="MainController" method="POST">
+            <input type="hidden" name="action" value="register"/>           
+            <input type="submit" value="ĐĂNG KÍ"/>             
+        </form>        
     </body>
 </html>
