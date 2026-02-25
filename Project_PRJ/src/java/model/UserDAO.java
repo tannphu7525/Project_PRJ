@@ -19,8 +19,8 @@ public class UserDAO {
                                                 "           (?\n" +
                                                 "           ,?\n" +
                                                 "           ,?\n" +
-                                                "           ,?\n" +
-                                                "           ,?)";
+                                                "           ,'CUSTOMER'\n" +
+                                                "           ,1)";
     
     // Login DAO
     public UserDTO login(String txtUsername, String txtPassword) {
