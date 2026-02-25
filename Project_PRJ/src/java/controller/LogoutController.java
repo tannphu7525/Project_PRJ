@@ -28,7 +28,7 @@ public class LogoutController extends HttpServlet {
 
         Cookie logoutCookie = new Cookie("c_user", "");
         logoutCookie.setMaxAge(0);
-        logoutCookie.setHttpOnly(true); 
+        logoutCookie.setHttpOnly(true);
         logoutCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
         response.addCookie(logoutCookie);
 

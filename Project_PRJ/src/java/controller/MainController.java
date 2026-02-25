@@ -37,7 +37,7 @@ public class MainController extends HttpServlet {
                 break;
             default:
                 url = LOGIN_PAGE;
-                System.err.println("[MainController] Action không xác định: " + action);
+                System.err.println("Action không xác định: " + action);
         }
 
         request.getRequestDispatcher(url).forward(request, response);
