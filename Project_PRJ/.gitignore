@@ -1,0 +1,16 @@
+# Bỏ qua các thư mục build sinh ra tự động
+build/
+dist/
+
+# Bỏ qua cấu hình cá nhân của NetBeans (THỦ PHẠM GÂY LỖI SỐ 2)
+nbproject/private/
+nbproject/project.xml.build-impl
+nbproject/Makefile-*.mk
+nbproject/Package-*.bash
+
+# Bỏ qua các file class đã biên dịch
+*.class
+
+# Bỏ qua cấu hình hệ điều hành
+.DS_Store
+Thumbs.db
