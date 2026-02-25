@@ -9,6 +9,18 @@ public class UserDAO {
 
     private static final String LOGIN_QUERY = "SELECT * FROM Users WHERE Username = ? AND Password = ?";
     private static final String CHECK_DUPLICATE_USERNAME_QUERY = "SELECT Username FROM Users WHERE Username = ?";
+    private static final String REGISTER_QUERY = "INSERT INTO [dbo].[Users]\n" +
+                                                "           ([Username]\n" +
+                                                "           ,[Password]\n" +
+                                                "           ,[FullName]\n" +
+                                                "           ,[Role]\n" +
+                                                "           ,[Status])\n" +
+                                                "     VALUES\n" +
+                                                "           (?\n" +
+                                                "           ,?\n" +
+                                                "           ,?\n" +
+                                                "           ,?\n" +
+                                                "           ,?)";
     
     // Login DAO
     public UserDTO login(String txtUsername, String txtPassword) {
@@ -89,7 +101,31 @@ public class UserDAO {
     }
     
     // Register DAO
-//    public UserDTO registerUser(){
-//        
-//    }
+    public boolean registerUser(UserDTO user){
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement(REGISTER_QUERY);
+                stm.setString(1, user.getUsername());
+                stm.setString(2, user.getPassword());
+                stm.setString(3, user.getFullName());
+
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) conn.close();
+                if (stm != null) stm.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return check;             
+    }
 }
