@@ -169,7 +169,7 @@
                         <i class="fas fa-sign-in-alt me-2"></i>ĐĂNG NHẬP
                     </a>
 
-                    <a href="login.jsp?mode=register" class="btn btn-outline-register fw-bold px-4 py-2 rounded-pill">
+                    <a href="register.jsp" class="btn btn-outline-register fw-bold px-4 py-2 rounded-pill">
                         <i class="fas fa-user-plus me-2"></i>ĐĂNG KÝ THÀNH VIÊN
                     </a>
                 </div>

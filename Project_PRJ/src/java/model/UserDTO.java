@@ -23,6 +23,7 @@ public class UserDTO {
         this.fullName = fullName;
         this.role = role;
         this.status = status;
+        
     }
 
     public int getUserID() {

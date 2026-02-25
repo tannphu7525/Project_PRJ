@@ -30,6 +30,7 @@ public class RegisterController extends HttpServlet {
         String fullName = request.getParameter("fullName");
         String password = request.getParameter("password");
         String confirmpassword = request.getParameter("confirmPassword");
+        
 
         String url = ERROR_PAGE;
         String msg = "";

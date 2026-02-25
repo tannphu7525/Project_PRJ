@@ -28,29 +28,50 @@
     <style>
         :root {
             --bg-body: #1b212c;
-            --bg-card: #28303d;
+            --bg-card: rgba(40, 48, 61, 0.85); /* Kính mờ đồng bộ */
             --accent-blue: #00d4ff;
             --text-main: #ffffff;
             --text-muted: #cbd5e1;
         }
 
         body { 
-             background: linear-gradient(rgba(27, 33, 44, 0.8), rgba(17, 24, 39, 0.9)),
-                    url('https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop') center/cover no-repeat; 
-            color: var(--text-main);
-            font-family: 'Roboto', sans-serif;
+            margin: 0;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            position: relative;
+             background: linear-gradient(rgba(27, 33, 44, 0.8), rgba(17, 24, 39, 0.9)),
+                    url('https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop') center/cover no-repeat;
         }
 
-        .login-container { width: 100%; max-width: 400px; }
+        /* Đồng bộ hiệu ứng Slideshow với trang Register */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) blur(2px);
+            animation: syncSlideshow 20s infinite ease-in-out;
+        }
+
+        @keyframes syncSlideshow {
+            0% { background-image: url('images/bg-login-1.jpg'); }
+            33% { background-image: url('images/bg-login-2.jpg'); }
+            66% { background-image: url('images/bg-login-3.jpg'); }
+            100% { background-image: url('images/bg-login-1.jpg'); }
+        }
+
+        .login-container { width: 100%; max-width: 400px; z-index: 10; }
 
         .card {
             background-color: var(--bg-card);
-            border: 1px solid #334155;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -59,7 +80,7 @@
         .text-muted, .form-check-label { color: var(--text-muted) !important; }
 
         .form-control {
-            background-color: #151920;
+            background-color: rgba(21, 25, 32, 0.8);
             border: 1px solid #475569;
             color: #ffffff !important;
         }
@@ -67,6 +88,7 @@
             background-color: #151920;
             color: #ffffff;
             border-color: var(--accent-blue);
+            box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
         }
 
         .btn-primary {
@@ -77,10 +99,13 @@
         }
 
         .logo-text { color: var(--accent-blue); font-weight: bold; font-size: 1.8rem; text-decoration: none; }
-        .toggle-link { color: var(--accent-blue); cursor: pointer; text-decoration: none; }
-
-        /* QUAN TRỌNG: Mặc định ẩn form đăng ký để không bị nhân đôi */
-        #registerForm { display: none; }
+        
+        /* Chỉnh lại link chuyển trang */
+        .register-link { color: var(--accent-blue); text-decoration: none; font-weight: bold; }
+        .register-link:hover { text-decoration: underline; }
+        .text-center {
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -93,8 +118,8 @@
         <div class="card p-4">
             <div id="loginForm">
                 <div class="text-center mb-4">
-                    <h4>Welcome</h4>
-                    <p class="text-muted small">Please Login or Sign up</p>
+                    <h4>Chào mừng trở lại</h4>
+                    <p class="text-muted small">Vui lòng đăng nhập để tiếp tục</p>
                 </div>
 
                 <% if (msg != null && !msg.isEmpty()) { %>
@@ -116,31 +141,10 @@
                         <label class="form-check-label small" for="rem">Ghi nhớ đăng nhập</label>
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-2 mb-3">ĐĂNG NHẬP</button>
-                    <p class="text-center small">Chưa có tài khoản? <span class="toggle-link" onclick="toggleForm()">Đăng ký ngay</span></p>
-                </form>
-            </div>
-
-            <div id="registerForm">
-                <div class="text-center mb-4">
-                    <h4>Tạo tài khoản</h4>
-                    <p class="text-muted small">Đăng ký thành viên mới</p>
-                </div>
-                <form action="MainController" method="POST">
-                    <input type="hidden" name="action" value="register"/>
-                    <div class="mb-3">
-                        <label class="form-label small">Username</label>
-                        <input type="text" name="username" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small">Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small">Re-password</label>
-                        <input type="password" name="re-password" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">ĐĂNG KÝ</button>
-                    <p class="text-center small">Đã có tài khoản? <span class="toggle-link" onclick="toggleForm()">Quay lại đăng nhập</span></p>
+                    
+                    <p class="text-center small">Chưa có tài khoản? 
+                        <a href="register.jsp" class="register-link">Đăng ký ngay</a>
+                    </p>
                 </form>
             </div>
         </div>
@@ -150,18 +154,6 @@
         </div>
     </div>
 
-    <script>
-        function toggleForm() {
-            const login = document.getElementById('loginForm');
-            const register = document.getElementById('registerForm');
-            if (login.style.display === "none") {
-                login.style.display = "block";
-                register.style.display = "none";
-            } else {
-                login.style.display = "none";
-                register.style.display = "block";
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
