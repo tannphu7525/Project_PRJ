@@ -53,9 +53,6 @@
             <input type="submit" value="ĐĂNG NHẬP"/> 
         </form>
 
-        <form action="MainController" method="POST">
-            <input type="hidden" name="action" value="register"/>           
-            <input type="submit" value="ĐĂNG KÍ"/>             
-        </form>        
+    <a href="register.jsp"><button type="button">ĐĂNG KÝ</button></a>  
     </body>
 </html>
