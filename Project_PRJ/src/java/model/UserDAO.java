@@ -8,9 +8,10 @@ import util.DBUtils;
 public class UserDAO {
 
     private static final String LOGIN_QUERY = "SELECT * FROM Users WHERE Username = ? AND Password = ?";
-
+    private static final String CHECK_DUPLICATE_USERNAME_QUERY = "SELECT Username FROM Users WHERE Username = ?";
+    
+    // Login DAO
     public UserDTO login(String txtUsername, String txtPassword) {
-
         UserDTO user = null;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -51,4 +52,44 @@ public class UserDAO {
         }
         return user;
     }
+    
+    //Check Username có tồn tại trong database chưa?
+    public boolean checkDuplicateUsername(String username){
+        boolean isExist = false;
+        UserDTO user = null;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement(CHECK_DUPLICATE_USERNAME_QUERY);
+                stm.setString(1, username);
+                rs = stm.executeQuery();
+                if (rs.next()) {
+                    isExist = true; 
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (stm != null)
+                    stm.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return isExist;      
+    }
+    
+    // Register DAO
+//    public UserDTO registerUser(){
+//        
+//    }
 }
