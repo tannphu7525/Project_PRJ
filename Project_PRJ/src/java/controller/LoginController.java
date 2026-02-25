@@ -16,7 +16,7 @@ public class LoginController extends HttpServlet {
 
     private static final String ERROR_PAGE = "error.jsp";
     private static final String ADMIN_PAGE = "admin.jsp";
-    private static final String USER_PAGE = "index.jsp";
+    private static final String USER_PAGE = "welcome.jsp";
     private static final String LOGIN_PAGE = "login.jsp";
 
     @Override
@@ -61,8 +61,7 @@ public class LoginController extends HttpServlet {
                 session.setAttribute("user", user);
 
                 Cookie userCookie = new Cookie("c_user", txtUsername);
-                userCookie.setHttpOnly(true); // Chống XSS: JS không đọc được cookie
-                // userCookie.setSecure(true); // Bật khi deploy lên HTTPS
+                userCookie.setHttpOnly(true); 
 
                 if ("ON".equals(checkRemember)) {
                     userCookie.setMaxAge(60 * 60 * 24 * 7);

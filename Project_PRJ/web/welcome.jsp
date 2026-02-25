@@ -13,5 +13,7 @@
     </head>
     <body>
         <h1>Cac chuc nang</h1>
+        
+        <a href="MainController?action=logout">LOGOUT</a>
     </body>
 </html>

@@ -12,6 +12,7 @@ public class MainController extends HttpServlet {
 
     private static final String LOGIN_PAGE = "login.jsp";
     private static final String LOGIN_CONTROLLER = "LoginController";
+    private static final String LOGOUT_CONTROLLER = "LogoutController";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -30,6 +31,9 @@ public class MainController extends HttpServlet {
         switch (action) {
             case "login":
                 url = LOGIN_CONTROLLER;
+                break;
+            case "logout":
+                url = LOGOUT_CONTROLLER;
                 break;
             default:
                 url = LOGIN_PAGE;

@@ -1,6 +1,6 @@
 <%-- 
     Document   : admin
-    Created on : Feb 25, 2026, 12:29:35 AM
+    Created on : Feb 25, 2026, 4:40:37 PM
     Author     : admin
 --%>
 
@@ -12,6 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Day la trang admin</h1>
+        <h1>Trang Admin</h1>
     </body>
 </html>
