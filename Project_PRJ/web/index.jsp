@@ -61,7 +61,7 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                text-shadow: 2px 2px 8px rgba(0,0,0,0.8); /* Tạo bóng cho chữ dễ đọc trên nền ảnh */
+                /* Tạo bóng cho chữ dễ đọc trên nền ảnh */
             }
 
             /* Nút Đăng ký màu trắng/viền xanh lơ */
