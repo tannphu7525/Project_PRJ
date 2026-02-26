@@ -9,19 +9,22 @@ public class UserDAO {
 
     private static final String LOGIN_QUERY = "SELECT * FROM Users WHERE Username = ? AND Password = ?";
     private static final String CHECK_DUPLICATE_USERNAME_QUERY = "SELECT Username FROM Users WHERE Username = ?";
-    private static final String REGISTER_QUERY = "INSERT INTO [dbo].[Users]\n" +
-                                                "           ([Username]\n" +
-                                                "           ,[Password]\n" +
-                                                "           ,[FullName]\n" +
-                                                "           ,[Role]\n" +
-                                                "           ,[Status])\n" +
-                                                "     VALUES\n" +
-                                                "           (?\n" +
-                                                "           ,?\n" +
-                                                "           ,?\n" +
-                                                "           ,'CUSTOMER'\n" +
-                                                "           ,1)";
-    
+    private static final String CHECK_DUPLICATE_EMAIL_QUERY = "SELECT Email FROM Users WHERE Email = ?";
+    private static final String REGISTER_QUERY = "INSERT INTO [dbo].[Users]\n"
+            + "           ([Username]\n"
+            + "           ,[Password]\n"
+            + "           ,[FullName]\n"
+            + "           ,[Role]\n"
+            + "           ,[Status]\n"
+            + "           ,[Email])\n"
+            + "     VALUES\n"
+            + "           (?\n"
+            + "           ,?\n"
+            + "           ,?\n"
+            + "           ,'CUSTOMER'\n"
+            + "           ,1"
+            + "           ,?)";
+
     // Login DAO
     public UserDTO login(String txtUsername, String txtPassword) {
         UserDTO user = null;
@@ -44,29 +47,33 @@ public class UserDAO {
                     String fullName = rs.getString("fullName");
                     String role = rs.getString("role");
                     boolean status = rs.getBoolean("status");
+                    String email = rs.getString("email");
 
-                    user = new UserDTO(userID, username, password, fullName, role, status);
+                    user = new UserDTO(userID, username, password, fullName, role, status, email);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null)
+                if (rs != null) {
                     rs.close();
-                if (stm != null)
+                }
+                if (stm != null) {
                     stm.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return user;
     }
-    
+
     //Check Username có tồn tại trong database chưa?
-    public boolean checkDuplicateUsername(String username){
+    public boolean checkDuplicateUsername(String username) {
         boolean isExist = false;
         UserDTO user = null;
         Connection conn = null;
@@ -80,28 +87,31 @@ public class UserDAO {
                 stm.setString(1, username);
                 rs = stm.executeQuery();
                 if (rs.next()) {
-                    isExist = true; 
+                    isExist = true;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null)
+                if (rs != null) {
                     rs.close();
-                if (stm != null)
+                }
+                if (stm != null) {
                     stm.close();
-                if (conn != null)
+                }
+                if (conn != null) {
                     conn.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return isExist;      
+        return isExist;
     }
-    
+
     // Register DAO
-    public boolean registerUser(UserDTO user){
+    public boolean registerUser(UserDTO user) {
         boolean check = false;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -113,6 +123,7 @@ public class UserDAO {
                 stm.setString(1, user.getUsername());
                 stm.setString(2, user.getPassword());
                 stm.setString(3, user.getFullName());
+                stm.setString(4, user.getEmail());
 
                 check = stm.executeUpdate() > 0;
             }
@@ -120,12 +131,55 @@ public class UserDAO {
             e.printStackTrace();
         } finally {
             try {
-                if (conn != null) conn.close();
-                if (stm != null) stm.close();
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return check;             
+        return check;
+    }
+
+    public boolean checkDuplicateEmail(String email) {
+        boolean isExist = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtils.getConnection(); // Sử dụng util kết nối của bạn
+            if (conn != null) {
+                stm = conn.prepareStatement(CHECK_DUPLICATE_EMAIL_QUERY);
+                stm.setString(1, email);
+                rs = stm.executeQuery();
+
+                // Nếu ResultSet có kết quả (next() == true) nghĩa là email đã tồn tại
+                if (rs.next()) {
+                    isExist = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Đóng tài nguyên để tránh rò rỉ bộ nhớ
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return isExist;
     }
 }

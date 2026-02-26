@@ -30,7 +30,7 @@ public class RegisterController extends HttpServlet {
         String fullName = request.getParameter("fullName");
         String password = request.getParameter("password");
         String confirmpassword = request.getParameter("confirmPassword");
-        
+        String email = request.getParameter("email");
 
         String url = ERROR_PAGE;
         String msg = "";
@@ -44,8 +44,11 @@ public class RegisterController extends HttpServlet {
                 if (dao.checkDuplicateUsername(username)) {
                     msg = "Username này đã được sử dụng. Vui lòng chọn Username khác";
                     request.setAttribute("msg", msg);
+                } else if (dao.checkDuplicateEmail(email)) {
+                    msg = "Email này đã được sử dụng để đăng ký tài khoản khác!";
+                    request.setAttribute("msg", msg);
                 } else {
-                    UserDTO newUser = new UserDTO(0, username, password, fullName, "CUSTOMER", true);
+                    UserDTO newUser = new UserDTO(0, username, password, fullName, "CUSTOMER", true, email);
                     boolean isSuccess = dao.registerUser(newUser);
 
                     if (isSuccess) {

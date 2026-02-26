@@ -15,16 +15,19 @@ public class UserDTO {
     private String fullName;
     private String role;
     private boolean status;
+    private String email;
 
-    public UserDTO(int userID, String username, String password, String fullName, String role, boolean status) {
+    public UserDTO(int userID, String username, String password, String fullName, String role, boolean status, String email) {
         this.userID = userID;
         this.username = username;
         this.password = password;
         this.fullName = fullName;
         this.role = role;
         this.status = status;
-        
+        this.email = email;
     }
+
+    
 
     public int getUserID() {
         return userID;
@@ -73,6 +76,15 @@ public class UserDTO {
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+   
     
 }
