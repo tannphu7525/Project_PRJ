@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "MainController", urlPatterns = { "/MainController" })
 public class MainController extends HttpServlet {
 
-    private static final String LOGIN_PAGE = "login.jsp";
+    private static final String LOGIN_PAGE = "index.jsp";
     private static final String LOGIN_CONTROLLER = "LoginController";
     private static final String LOGOUT_CONTROLLER = "LogoutController";
     private static final String REGISTER_CONTROLLER = "RegisterController";
+    private static final String ADMIN_MOVIE_CONTROLLER = "AdminMovieController";
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -22,8 +24,8 @@ public class MainController extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if (action == null || action.trim().isEmpty()) {
-            request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
+        if (action == null || action.trim().isEmpty() || action.equals("home")) {
+            request.getRequestDispatcher("HomeController").forward(request, response);
             return;
         }
 
@@ -38,6 +40,9 @@ public class MainController extends HttpServlet {
             case "register":
                 url = REGISTER_CONTROLLER;
                 break;
+            case "adminMovie":
+                url = ADMIN_MOVIE_CONTROLLER;
+                break;
             default:
                 url = LOGIN_PAGE;
                 System.err.println("Action không xác định: " + action);
@@ -49,11 +54,7 @@ public class MainController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
-        // GET → hiển thị trang login
-        request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
+        doPost(request, response);
     }
 
     @Override

@@ -33,8 +33,17 @@ public class MovieDAO {
                                                 "           ,?\n" +
                                                 "           ,?\n" +
                                                 "           ,?\n" +
-                                                "           ,?";
+                                                "           ,?)";
     private final static String DELETE_MOVIE = "UPDATE [dbo].[Movies] SET [Status] = 0 WHERE MovieID = ?";
+    private final static String UPDATE_MOVIE = "UPDATE [dbo].[Movies]\n" +
+                                                "   SET [Title] = ?\n" +
+                                                "      ,[Description] = ?\n" +
+                                                "      ,[PosterUrl] = ?\n" +
+                                                "      ,[Genre] = ?\n" +
+                                                "      ,[BasePrice] = ?\n" +
+                                                "      ,[Status] = ?\n" +
+                                                " WHERE MovieID = ?";
+    
     //Lấy ra tất cả Movie
     public ArrayList<MovieDTO> getAllMovie() {
         ArrayList<MovieDTO> list = new ArrayList<>();
@@ -60,11 +69,36 @@ public class MovieDAO {
         return list;
     }
     
-    //INSERT New Movie
+    //Lấy ra phim đang chiếu (Admin)
+    public ArrayList<MovieDTO> getActiveMovie() {
+        ArrayList<MovieDTO> list = new ArrayList<>();
+        try ( Connection conn = DBUtils.getConnection();
+                PreparedStatement stm = conn.prepareStatement(GET_ACTIVE_MOVIE)) {
+            try ( ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    int movieID = rs.getInt("movieID");
+                    String title = rs.getString("title");
+                    String description = rs.getString("description");
+                    String posterUrl = rs.getString("posterUrl");
+                    String genre = rs.getString("genre");
+                    double basePrice = rs.getDouble("basePrice");
+                    boolean status = rs.getBoolean("status");
+
+                    MovieDTO movie = new MovieDTO(movieID, title, description, posterUrl, genre, basePrice, status);
+                    list.add(movie);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    //INSERT New Movie (Admin)
     public boolean insertMovie(MovieDTO movie) {
         boolean check = false;
         try ( Connection conn = DBUtils.getConnection();
-                PreparedStatement stm = conn.prepareStatement(GET_ALL_MOVIE)) {
+                PreparedStatement stm = conn.prepareStatement(INSERT_MOVIE)) {
         stm.setString(1, movie.getTitle());
         stm.setString(2, movie.getDescription());
         stm.setString(3, movie.getPosterUrl());
@@ -79,7 +113,7 @@ public class MovieDAO {
         return check;
     }    
     
-    //DELETE MOVIE
+    //DELETE MOVIE (Admin)
     public boolean deleteMovie(int movieID) {
         boolean check = false;
         try ( Connection conn = DBUtils.getConnection();
@@ -90,5 +124,25 @@ public class MovieDAO {
             e.printStackTrace();
         }
         return check;
-    }      
+    }  
+
+    //Update Movie (Admin)
+    public boolean updateMovie(MovieDTO movie) {
+        boolean checkUpdate = false;
+        try ( Connection conn = DBUtils.getConnection();
+                PreparedStatement stm = conn.prepareStatement(UPDATE_MOVIE)) {
+        stm.setString(1, movie.getTitle());
+        stm.setString(2, movie.getDescription());
+        stm.setString(3, movie.getPosterUrl());
+        stm.setString(4, movie.getGenre());
+        stm.setDouble(5, movie.getBasePrice());
+        stm.setBoolean(6, movie.isStatus());
+        stm.setInt(7, movie.getMovieID());
+        
+        checkUpdate = stm.executeUpdate() > 0; 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return checkUpdate;
+    }  
 }
