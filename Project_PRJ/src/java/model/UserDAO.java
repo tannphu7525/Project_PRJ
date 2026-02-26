@@ -28,18 +28,11 @@ public class UserDAO {
     // Login DAO
     public UserDTO login(String txtUsername, String txtPassword) {
         UserDTO user = null;
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-
-        try {
-            conn = DBUtils.getConnection();
-            if (conn != null) {
-                stm = conn.prepareStatement(LOGIN_QUERY);
-                stm.setString(1, txtUsername);
-                stm.setString(2, txtPassword);
-                rs = stm.executeQuery();
-
+        try ( Connection conn = DBUtils.getConnection();
+                PreparedStatement stm = conn.prepareStatement(LOGIN_QUERY)) {
+            stm.setString(1, txtUsername);
+            stm.setString(2, txtPassword);
+            try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
                     int userID = rs.getInt("userID");
                     String username = rs.getString("username");
@@ -54,20 +47,6 @@ public class UserDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stm != null) {
-                    stm.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         return user;
     }
@@ -76,36 +55,17 @@ public class UserDAO {
     public boolean checkDuplicateUsername(String username) {
         boolean isExist = false;
         UserDTO user = null;
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
 
-        try {
-            conn = DBUtils.getConnection();
-            if (conn != null) {
-                stm = conn.prepareStatement(CHECK_DUPLICATE_USERNAME_QUERY);
-                stm.setString(1, username);
-                rs = stm.executeQuery();
+        try ( Connection conn = DBUtils.getConnection();
+                PreparedStatement stm = conn.prepareStatement(CHECK_DUPLICATE_USERNAME_QUERY)) {
+            stm.setString(1, username);
+            try ( ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
                     isExist = true;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stm != null) {
-                    stm.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         return isExist;
     }
@@ -113,72 +73,31 @@ public class UserDAO {
     // Register DAO
     public boolean registerUser(UserDTO user) {
         boolean check = false;
-        Connection conn = null;
-        PreparedStatement stm = null;
-
-        try {
-            conn = DBUtils.getConnection();
-            if (conn != null) {
-                stm = conn.prepareStatement(REGISTER_QUERY);
-                stm.setString(1, user.getUsername());
-                stm.setString(2, user.getPassword());
-                stm.setString(3, user.getFullName());
-                stm.setString(4, user.getEmail());
-
-                check = stm.executeUpdate() > 0;
-            }
+        try ( Connection conn = DBUtils.getConnection();
+                PreparedStatement stm = conn.prepareStatement(REGISTER_QUERY)) {
+            stm.setString(1, user.getUsername());
+            stm.setString(2, user.getPassword());
+            stm.setString(3, user.getFullName());
+            stm.setString(4, user.getEmail());
+            check = stm.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-                if (stm != null) {
-                    stm.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         return check;
     }
 
     public boolean checkDuplicateEmail(String email) {
         boolean isExist = false;
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-
-        try {
-            conn = DBUtils.getConnection(); // Sử dụng util kết nối của bạn
-            if (conn != null) {
-                stm = conn.prepareStatement(CHECK_DUPLICATE_EMAIL_QUERY);
-                stm.setString(1, email);
-                rs = stm.executeQuery();
-
-                // Nếu ResultSet có kết quả (next() == true) nghĩa là email đã tồn tại
+        try ( Connection conn = DBUtils.getConnection();
+                PreparedStatement stm = conn.prepareStatement(CHECK_DUPLICATE_EMAIL_QUERY)) {
+            stm.setString(1, email);
+            try ( ResultSet rs = stm.executeQuery();) {
                 if (rs.next()) {
                     isExist = true;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            // Đóng tài nguyên để tránh rò rỉ bộ nhớ
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stm != null) {
-                    stm.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         return isExist;
     }
