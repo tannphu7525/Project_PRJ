@@ -81,18 +81,15 @@ public class AdminMovieController extends HttpServlet {
                     price = 0;
                 }            
                 boolean status = request.getParameter("status") != null;               
-                MovieDTO movie = new MovieDTO(0, title, desc, poster, genre, price, status);              
+                MovieDTO movie = new MovieDTO(movieID, title, subAction, poster, genre, price, status);              
                 boolean checkUpdate = dao.updateMovie(movie);
                 if (checkUpdate) {
                     request.setAttribute("msg", "Cập nhật thành công!");
                 }else{
                     request.setAttribute("msg", "Cập nhật thất bại!");
-                }
-                
+                }               
                 //Load lại toàn bộ đã cập nhật 
-                request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());
-                                
-                
+                request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());                              
             }
         } catch (Exception e) {
             e.printStackTrace();
