@@ -33,6 +33,7 @@ public class AdminMovieController extends HttpServlet {
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
                 ArrayList<MovieDTO> list = dao.getAllMovie();
                 request.setAttribute("ADMIN_MOVIE_LIST", list);
+                request.getRequestDispatcher("admin.jsp").forward(request, response);
             }else if (subAction.equals("add")) {
                 // Add
                 String title = request.getParameter("title");
@@ -56,6 +57,7 @@ public class AdminMovieController extends HttpServlet {
                 
                 //Load lại toàn bộ đã cập nhật 
                 request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());
+                response.sendRedirect("AdminMovieController?subAction=list");
                 
             }else if (subAction.equals("delete")) {
                 //Delete Movie
@@ -66,6 +68,7 @@ public class AdminMovieController extends HttpServlet {
                 }
                 //Load lại danh sách
                 request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());
+                response.sendRedirect("AdminMovieController?subAction=list");
                 
             }else if (subAction.equals("update")) {
                 //Update Movie
@@ -89,12 +92,11 @@ public class AdminMovieController extends HttpServlet {
                     request.setAttribute("msg", "Cập nhật thất bại!");
                 }               
                 //Load lại toàn bộ đã cập nhật 
-                request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());                              
+                request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());    
+                response.sendRedirect("AdminMovieController?subAction=list");
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }finally{
-            request.getRequestDispatcher(url).forward(request, response);
         }
     } 
 

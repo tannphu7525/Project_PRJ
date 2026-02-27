@@ -10,14 +10,16 @@
 
     <h1>ADMIN PAGE</h1>
     
-    <a href="MainController?action=adminMovie&subAction=list">
+    <a href="AdminMovieController?subAction=list">
         <button>Tải danh sách phim từ DB</button>
     </a>
     
     <br><br>
     
-    <c:if test="${not empty msg}">
-        <h3>Thông báo: ${msg}</h3>
+    <c:if test="${not empty sessionScope.msg}">
+        <h3 style="color: green;">Thông báo: ${sessionScope.msg}</h3>
+        <%-- Lệnh dưới đây giúp xóa thông báo đi, tránh việc F5 nó vẫn hiện --%>
+        <c:remove var="msg" scope="session" />
     </c:if>
 
     <hr>
@@ -40,7 +42,7 @@
                 <td>${movie.basePrice}</td>
                 <td>${movie.status ? 'Đang chiếu' : 'Ngừng chiếu'}</td>
                 <td>
-                    <form action="MainController" method="POST">
+                    <form action="AdminMovieController" method="POST">
                         <input type="hidden" name="action" value="adminMovie">
                         <input type="hidden" name="subAction" value="delete">
                         <input type="hidden" name="movieID" value="${movie.movieID}">
@@ -54,7 +56,7 @@
     <hr>
 
     <h2>2. Form Thêm / Cập nhật phim</h2>
-    <form action="MainController" method="POST">
+    <form action="AdminMovieController" method="POST">
         <input type="hidden" name="action" value="adminMovie">
 
         <label>Bạn muốn làm gì?:</label>
