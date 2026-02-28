@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -117,7 +118,9 @@
                                     <td class="fw-bold">${movie.movieID}</td>
                                     <td class="text-start">${movie.title}</td>
                                     <td>${movie.genre}</td>
-                                    <td class="text-warning fw-bold">${movie.basePrice} ₫</td>
+                                    <td class="text-warning fw-bold">
+                                        <fmt:formatNumber value="${movie.basePrice}" type="number" pattern="#,###"/> ₫
+                                    </td>
                                     <td><span class="badge ${movie.status ? 'bg-success' : 'bg-danger'} p-2">${movie.status ? 'Đang chiếu' : 'Ngừng chiếu'}</span></td>
                                     <td>
                                         <form action="AdminMovieController" method="POST" class="m-0">
