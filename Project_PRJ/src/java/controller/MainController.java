@@ -15,6 +15,8 @@ public class MainController extends HttpServlet {
     private static final String LOGOUT_CONTROLLER = "LogoutController";
     private static final String REGISTER_CONTROLLER = "RegisterController";
     private static final String ADMIN_MOVIE_CONTROLLER = "AdminMovieController";
+    private static final String ADMIN_SHOWTIME_CONTROLLER = "AdminShowtimeController";
+    
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -42,6 +44,9 @@ public class MainController extends HttpServlet {
                 break;
             case "adminMovie":
                 url = ADMIN_MOVIE_CONTROLLER;
+                break;
+            case "adminShowtime":
+                url = ADMIN_SHOWTIME_CONTROLLER;
                 break;
             default:
                 url = LOGIN_PAGE;

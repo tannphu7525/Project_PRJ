@@ -29,18 +29,13 @@ public class AdminMovieController extends HttpServlet {
         MovieDAO dao = new MovieDAO();
         
         try {
-            // -----------------------------------------------------------
             // TRƯỜNG HỢP 1: HIỂN THỊ DANH SÁCH (Mặc định)
-            // -----------------------------------------------------------
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
                 ArrayList<MovieDTO> list = dao.getAllMovie();
                 request.setAttribute("ADMIN_MOVIE_LIST", list);
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
             }
-            
-            // -----------------------------------------------------------
             // TRƯỜNG HỢP 2: LẤY DỮ LIỆU ĐỂ SỬA (Khi nhấn Enter ở ô ID)
-            // -----------------------------------------------------------
             else if (subAction.equals("edit")) {
                 int id = 0;
                 try {
@@ -61,11 +56,8 @@ public class AdminMovieController extends HttpServlet {
                 // Load lại danh sách và Forward để hiện Form có dữ liệu
                 request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
-            }
-            
-            // -----------------------------------------------------------
+            }           
             // TRƯỜNG HỢP 3: THÊM PHIM MỚI
-            // -----------------------------------------------------------
             else if (subAction.equals("add")) {
                 // 1. Lấy ID 
                 int idInput = 0;
@@ -78,7 +70,6 @@ public class AdminMovieController extends HttpServlet {
                     idInput = 0;
                 }
 
-                // 2. [QUAN TRỌNG] LẤY DỮ LIỆU TỪ CÁC Ô INPUT 
                 String title = request.getParameter("title");
                 String desc = request.getParameter("description");
                 String poster = request.getParameter("posterUrl");
@@ -95,7 +86,6 @@ public class AdminMovieController extends HttpServlet {
                 if (idInput > 0 && dao.getMovieByID(idInput) != null) {
                     request.getSession().setAttribute("msg", "Lỗi: ID " + idInput + " đã tồn tại! Vui lòng chọn ID khác.");
                 } else {
-                    // 4. [QUAN TRỌNG] Truyền đúng các biến vừa lấy vào đây
                     MovieDTO movie = new MovieDTO(idInput, title, desc, poster, genre, price, status);
                     
                     boolean checkInsert = dao.insertMovie(movie);

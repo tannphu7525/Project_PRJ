@@ -81,6 +81,10 @@
                 </a>
             </div>
 
+            <a href="MainController?action=adminShowtime&subAction=list">
+                <button style="padding: 10px; background-color: #2196F3; color: white; margin-left: 10px; cursor: pointer;">🕒 Quản lý Lịch chiếu</button>
+            </a>
+
             <c:if test="${not empty sessionScope.msg}">
                 <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
                     <i class="fas fa-check-circle me-2"></i><strong>Thông báo:</strong> ${sessionScope.msg}

@@ -17,6 +17,9 @@ public class MovieDTO {
     private double basePrice;
     private boolean status;
 
+    public MovieDTO() {
+    }
+
     public MovieDTO(int movieID, String title, String description, String posterUrl, String genre, double basePrice, boolean status) {
         this.movieID = movieID;
         this.title = title;

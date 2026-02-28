@@ -17,6 +17,9 @@ public class UserDTO {
     private boolean status;
     private String email;
 
+    public UserDTO() {
+    }
+
     public UserDTO(int userID, String username, String password, String fullName, String role, boolean status, String email) {
         this.userID = userID;
         this.username = username;
