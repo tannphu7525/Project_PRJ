@@ -112,7 +112,7 @@
 
     <div class="login-container px-3">
         <div class="text-center mb-4">
-            <a href="index.jsp" class="logo-text"><i class="fas fa-film me-2"></i>PRJ CINEMA</a>
+            <a class="navbar-brand" href="HomeController">PRJ CINEMA</a>
         </div>
 
         <div class="card p-4">
@@ -150,7 +150,7 @@
         </div>
         
         <div class="text-center mt-4">
-            <a href="index.jsp" class="text-muted small text-decoration-none"><i class="fas fa-arrow-left me-2"></i>Quay lại trang chủ</a>
+            <a href="HomeController" class="text-muted small text-decoration-none"><i class="fas fa-arrow-left me-2"></i>Quay lại trang chủ</a>
         </div>
     </div>
 
