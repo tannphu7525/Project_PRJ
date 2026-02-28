@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -122,9 +123,9 @@
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">
-                        
+
                         <c:if test="${not empty sessionScope.LOGIN_USER}">
-                            
+
                             <div class="text-end d-none d-lg-block me-2">
                                 <span class="d-block small text-muted" style="font-size: 0.75rem;">Xin chào,</span>
                                 <span class="user-name">${sessionScope.LOGIN_USER.fullName}</span>
@@ -139,7 +140,7 @@
                             <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
                                 <i class="fas fa-sign-out-alt me-1"></i>Đăng Xuất
                             </a>
-                            
+
                         </c:if>
                     </div>
                 </div>
@@ -171,7 +172,9 @@
                                 <div class="card-body d-flex flex-column text-center">
                                     <h5 class="card-title fw-bold">${movie.title}</h5>
                                     <p class="text-muted small mb-3">${movie.genre}</p>
-                                    <h6 class="text-warning fw-bold mb-3">${movie.basePrice} VNĐ</h6>
+                                    <h6 class="text-warning fw-bold mb-3">
+                                        <fmt:formatNumber value="${movie.basePrice}" type="number" pattern="#,###"/> đ
+                                    </h6>
 
                                     <a href="BookingController?movieID=${movie.movieID}" class="btn btn-primary mt-auto w-100 fw-bold rounded-pill">
                                         <i class="fas fa-ticket-alt me-2"></i>Mua Vé Ngay
