@@ -64,10 +64,10 @@ public class AdminMovieController extends HttpServlet {
             }
             
             // -----------------------------------------------------------
-            // TRƯỜNG HỢP 3: THÊM PHIM MỚI (Dùng Redirect)
+            // TRƯỜNG HỢP 3: THÊM PHIM MỚI
             // -----------------------------------------------------------
             else if (subAction.equals("add")) {
-                // 1. Lấy ID từ form (người dùng có thể nhập hoặc để trống)
+                // 1. Lấy ID 
                 int idInput = 0;
                 try {
                     String idStr = request.getParameter("movieID");
@@ -78,14 +78,26 @@ public class AdminMovieController extends HttpServlet {
                     idInput = 0;
                 }
 
-                // ... (Lấy các tham số title, desc... như cũ) ...
-                
-                // 2. Kiểm tra trùng ID trước khi thêm
+                // 2. [QUAN TRỌNG] LẤY DỮ LIỆU TỪ CÁC Ô INPUT 
+                String title = request.getParameter("title");
+                String desc = request.getParameter("description");
+                String poster = request.getParameter("posterUrl");
+                String genre = request.getParameter("genre");
+                double price = 0;
+                try {
+                    price = Double.parseDouble(request.getParameter("basePrice"));
+                } catch (NumberFormatException e) {
+                    price = 0;
+                }
+                boolean status = request.getParameter("status") != null;
+
+                // 3. Kiểm tra trùng ID
                 if (idInput > 0 && dao.getMovieByID(idInput) != null) {
                     request.getSession().setAttribute("msg", "Lỗi: ID " + idInput + " đã tồn tại! Vui lòng chọn ID khác.");
                 } else {
-                    // 3. Truyền ID vào DTO (Nếu idInput=0 thì SQL tự tăng, nếu >0 thì SQL chèn đúng số đó)
-                    MovieDTO movie = new MovieDTO(idInput, subAction, subAction, subAction, subAction, idInput, true);
+                    // 4. [QUAN TRỌNG] Truyền đúng các biến vừa lấy vào đây
+                    MovieDTO movie = new MovieDTO(idInput, title, desc, poster, genre, price, status);
+                    
                     boolean checkInsert = dao.insertMovie(movie);
                     
                     if (checkInsert) {
