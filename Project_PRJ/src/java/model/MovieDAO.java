@@ -68,6 +68,7 @@ public class MovieDAO {
         return list;
     }
     
+    
     //Lấy ra phim đang chiếu (Admin)
     public ArrayList<MovieDTO> getActiveMovie() {
         ArrayList<MovieDTO> list = new ArrayList<>();
@@ -92,25 +93,79 @@ public class MovieDAO {
         }
         return list;
     }
+    public MovieDTO getMovieByID(int id) {
+        String sql = "SELECT * FROM Movies WHERE MovieID = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement stm = conn.prepareStatement(sql)) {
+            stm.setInt(1, id);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return new MovieDTO(
+                        rs.getInt("MovieID"),
+                        rs.getString("Title"),
+                        rs.getString("Description"),
+                        rs.getString("PosterUrl"),
+                        rs.getString("Genre"),
+                        rs.getDouble("BasePrice"),
+                        rs.getBoolean("Status")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     
     //INSERT New Movie (Admin)
     public boolean insertMovie(MovieDTO movie) {
         boolean check = false;
-        try ( Connection conn = DBUtils.getConnection();
-                PreparedStatement stm = conn.prepareStatement(INSERT_MOVIE)) {
-        stm.setString(1, movie.getTitle());
-        stm.setString(2, movie.getDescription());
-        stm.setString(3, movie.getPosterUrl());
-        stm.setString(4, movie.getGenre());
-        stm.setDouble(5, movie.getBasePrice());
-        stm.setBoolean(6, movie.isStatus());
+        String sql;
         
-        check = stm.executeUpdate() > 0; 
+        // TRƯỜNG HỢP 1: MUỐN TỰ NHẬP ID (ĐIỀN VÀO CHỖ TRỐNG)
+        if (movie.getMovieID() > 0) {
+            // Câu lệnh phức tạp hơn: Bật cho phép nhập ID -> Insert -> Tắt đi
+            sql = "SET IDENTITY_INSERT Movies ON; " +
+                  "INSERT INTO [dbo].[Movies] " +
+                  "([MovieID], [Title], [Description], [PosterUrl], [Genre], [BasePrice], [Status]) " +
+                  "VALUES (?, ?, ?, ?, ?, ?, ?); " +
+                  "SET IDENTITY_INSERT Movies OFF;";
+        } 
+        // TRƯỜNG HỢP 2: ĐỂ TỰ ĐỘNG TĂNG (ID = 0)
+        else {
+            sql = "INSERT INTO [dbo].[Movies] " +
+                  "([Title], [Description], [PosterUrl], [Genre], [BasePrice], [Status]) " +
+                  "VALUES (?, ?, ?, ?, ?, ?)";
+        }
+
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement stm = conn.prepareStatement(sql)) {
+            
+            if (movie.getMovieID() > 0) {
+                // Nếu tự nhập ID, phải set tham số ID đầu tiên
+                stm.setInt(1, movie.getMovieID());
+                stm.setString(2, movie.getTitle());
+                stm.setString(3, movie.getDescription());
+                stm.setString(4, movie.getPosterUrl());
+                stm.setString(5, movie.getGenre());
+                stm.setDouble(6, movie.getBasePrice());
+                stm.setBoolean(7, movie.isStatus());
+            } else {
+                // Nếu tự động, bỏ qua ID
+                stm.setString(1, movie.getTitle());
+                stm.setString(2, movie.getDescription());
+                stm.setString(3, movie.getPosterUrl());
+                stm.setString(4, movie.getGenre());
+                stm.setDouble(5, movie.getBasePrice());
+                stm.setBoolean(6, movie.isStatus());
+            }
+
+            check = stm.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return check;
-    }    
+    }
     
     //DELETE MOVIE (Admin)
     public boolean deleteMovie(int movieID) {
