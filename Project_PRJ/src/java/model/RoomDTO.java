@@ -15,16 +15,29 @@ public class RoomDTO {
     private int capacity;
     private boolean status;
     
+    private String cinemaName;
+    
     public RoomDTO() {
     }
 
-    public RoomDTO(int roomID, int cinemaID, String roomName, int capacity, boolean status) {
+    public RoomDTO(int roomID, int cinemaID, String roomName, int capacity, boolean status, String cinemaName) {
         this.roomID = roomID;
         this.cinemaID = cinemaID;
         this.roomName = roomName;
         this.capacity = capacity;
         this.status = status;
+        this.cinemaName = cinemaName;
     }
+
+    public String getCinemaName() {
+        return cinemaName;
+    }
+
+    public void setCinemaName(String cinemaName) {
+        this.cinemaName = cinemaName;
+    }
+
+
 
     public int getRoomID() {
         return roomID;

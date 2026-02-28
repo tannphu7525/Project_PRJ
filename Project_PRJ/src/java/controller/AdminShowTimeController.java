@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
 import java.io.IOException;
@@ -17,24 +16,24 @@ import model.RoomDAO;
 import model.ShowtimeDAO;
 import model.ShowtimeDTO;
 
-@WebServlet(name="AdminShowtimeController", urlPatterns={"/AdminShowtimeController"})
+@WebServlet(name = "AdminShowtimeController", urlPatterns = {"/AdminShowtimeController"})
 public class AdminShowTimeController extends HttpServlet {
 
-    private static final String ADMIN_SHOWTIME_PAGE = "admin_showtime.jsp";    
-    
+    private static final String ADMIN_SHOWTIME_PAGE = "admin_showtime.jsp";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");  
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");        
-        
+        response.setCharacterEncoding("UTF-8");
+
         String subAction = request.getParameter("subAction");
         String url = ADMIN_SHOWTIME_PAGE;
-        
+
         ShowtimeDAO showTimeDAO = new ShowtimeDAO();
         MovieDAO movieDAO = new MovieDAO();
         RoomDAO roomDAO = new RoomDAO();
-        
+
         try {
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
                 request.setAttribute("SHOWTIME_LIST", showTimeDAO.getAllShowtimes());
@@ -43,26 +42,29 @@ public class AdminShowTimeController extends HttpServlet {
             } else if (subAction.equals("add")) {
                 int movieID = Integer.parseInt(request.getParameter("movieID"));
                 int roomID = Integer.parseInt(request.getParameter("roomID"));
-                
+
                 String showDate = request.getParameter("showDate");
                 String startTime = request.getParameter("startTime");
-                double price = 0;
-                try {
-                    price = Double.parseDouble(request.getParameter("price"));
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-                boolean status = request.getParameter("status") != null;
-                
-                ShowtimeDTO newShowtime = new ShowtimeDTO(movieID, movieID, roomID, showDate, startTime, startTime, price, status, startTime, showDate, startTime);
-                
-                boolean checkAdd = showTimeDAO.insertShowtimes(newShowtime);
-                if (checkAdd) {
-                    request.setAttribute("msg", "Tạo Lịch chiếu thành công!");
+                String endTime = request.getParameter("endTime");
+
+                boolean isConflict = showTimeDAO.checkConflict(roomID, showDate, startTime, endTime);
+                if (isConflict) {
+                    request.setAttribute("msg", "LỖI: Trùng lịch! Phòng này đã có phim chiếu trong khung giờ trên.");
                 } else {
-                    request.setAttribute("msg", "Tạo Lịch chiếu thất bại!");
-                }  
-                
+
+                    double price = Double.parseDouble(request.getParameter("price"));
+                    boolean status = request.getParameter("status") != null;
+
+                    ShowtimeDTO newShowtime = new ShowtimeDTO(movieID, movieID, roomID, showDate, startTime, startTime, price, status, startTime, showDate, startTime);
+
+                    boolean checkAdd = showTimeDAO.insertShowtimes(newShowtime);
+                    if (checkAdd) {
+                        request.setAttribute("msg", "Tạo Lịch chiếu thành công!");
+                    } else {
+                        request.setAttribute("msg", "Tạo Lịch chiếu thất bại!");
+                    }
+                }
+
                 // Sau khi xong thì load lại danh sách
                 request.setAttribute("SHOWTIME_LIST", showTimeDAO.getAllShowtimes());
                 request.setAttribute("MOVIE_LIST", movieDAO.getActiveMovie());
@@ -73,20 +75,19 @@ public class AdminShowTimeController extends HttpServlet {
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }
-    } 
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-        
-        
+
     }
 
     @Override
