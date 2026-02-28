@@ -93,6 +93,7 @@ public class MovieDAO {
         }
         return list;
     }
+    
     public MovieDTO getMovieByID(int id) {
         String sql = "SELECT * FROM Movies WHERE MovieID = ?";
         try (Connection conn = DBUtils.getConnection();
