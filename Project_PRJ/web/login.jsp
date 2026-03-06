@@ -130,11 +130,11 @@
                     <input type="hidden" name="action" value="login"/>
                     <div class="mb-3">
                         <label class="form-label small">Tên đăng nhập</label>
-                        <input type="text" name="username" class="form-control" value="<%= savedUsername %>" required>
+                        <input type="text" name="username" class="form-control" value="<%= savedUsername %>" required placeholder="Nhập tên đăng nhập">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small">Mật khẩu</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <input type="password" name="password" class="form-control" required placeholder="Nhập mật khẩu">
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" name="remember" class="form-check-input" id="rem" value="ON" <%= isRemembered ? "checked" : "" %>>
