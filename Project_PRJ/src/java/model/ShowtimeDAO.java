@@ -31,6 +31,14 @@ public class ShowtimeDAO {
                                                 "WHERE RoomID = ? AND ShowDate = ? AND Status = 1 " +
                                                 "AND (? < EndTime AND ? > StartTime)";
     
+    private static final String GET_SHOWTIME_BY_MOVIEID = "SELECT st.ShowtimeID, st.RoomID, st.MovieID, st.ShowDate, st.StartTime, st.Price, "
+                                    + "r.RoomName, c.CinemaName "
+                                    + "FROM Showtime st "
+                                    + "JOIN Room r ON st.RoomID = r.RoomID "
+                                    + "JOIN Cinemas c ON r.CinemaID = c.CinemaID "
+                                    + "WHERE st.MovieID = ? AND st.Status = 1 "
+                                    + "ORDER BY st.ShowDate, st.StartTime";
+    
     //In ra tất cả lịch chiếu 
     public ArrayList<ShowtimeDTO> getAllShowtimes() {
         ArrayList<ShowtimeDTO> list = new ArrayList<>();
@@ -97,5 +105,34 @@ public class ShowtimeDAO {
             e.printStackTrace();
         }
         return isConflict;
+    }
+    
+    // Hàm lấy danh sách suất chiếu của 1 phim cụ thể (có kèm tên Rạp và tên Phòng)
+    public ArrayList<ShowtimeDTO> getShowtimesByMovieID(int movieID) {
+        ArrayList<ShowtimeDTO> list = new ArrayList<>();        
+        
+        try (Connection conn = util.DBUtils.getConnection();
+             PreparedStatement stm = conn.prepareStatement(GET_SHOWTIME_BY_MOVIEID)) {
+             
+            stm.setInt(1, movieID);
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    ShowtimeDTO dto = new ShowtimeDTO();
+                    dto.setShowtimeID(rs.getInt("ShowtimeID"));
+                    dto.setRoomID(rs.getInt("RoomID"));
+                    dto.setMovieID(rs.getInt("MovieID"));
+                    dto.setShowDate(rs.getString("ShowDate"));
+                    dto.setStartTime(rs.getString("StartTime"));
+                    dto.setPrice(rs.getDouble("Price"));
+                    dto.setRoomName(rs.getString("RoomName"));
+                    dto.setCinemaName(rs.getString("CinemaName"));
+                    
+                    list.add(dto);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

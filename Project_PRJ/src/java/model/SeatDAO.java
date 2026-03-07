@@ -18,7 +18,8 @@ public class SeatDAO {
                 + "WHERE s.RoomID = ? AND s.Status = 1 "
                 + "ORDER BY s.SeatName ASC";
 
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement stm = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtils.getConnection();
+                PreparedStatement stm = conn.prepareStatement(sql)) {
 
             stm.setInt(1, showtimeID);
             stm.setInt(2, roomID);

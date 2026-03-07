@@ -106,6 +106,17 @@
         </style>
     </head>
     <body>
+        <c:if test="${not empty sessionScope.MESSAGE}">
+            <div style="background-color: #d4edda; color: #155724; padding: 15px; text-align: center; border-bottom: 1px solid #c3e6cb;">
+                <h4 class="mb-2 fw-bold">${sessionScope.MESSAGE}</h4>
+                <p class="mb-0">
+                    👉 <a href="HistoryController" style="color: #0056b3; font-weight: bold; text-decoration: underline;">
+                        Bấm vào đây để xem chi tiết vé điện tử của bạn
+                    </a>
+                </p>
+            </div>
+            <% session.removeAttribute("MESSAGE");%> 
+        </c:if>
 
         <nav class="navbar navbar-expand-lg sticky-top">
             <div class="container">
@@ -126,16 +137,20 @@
 
                         <c:if test="${not empty sessionScope.LOGIN_USER}">
 
-                            <div class="text-end d-none d-lg-block me-2">
+                            <div class="text-end d-none d-lg-block me-3">
                                 <span class="d-block small text-muted" style="font-size: 0.75rem;">Xin chào,</span>
                                 <span class="user-name">${sessionScope.LOGIN_USER.fullName}</span>
                             </div>
 
-                            <c:if test="${sessionScope.LOGIN_USER.role eq 'ADMIN' or sessionScope.LOGIN_USER.role eq 'ADMIN'}">
+                            <c:if test="${sessionScope.LOGIN_USER.role eq 'ADMIN'}">
                                 <a href="AdminMovieController?subAction=list" class="btn btn-outline-warning btn-sm rounded-pill px-3 fw-bold">
                                     <i class="fas fa-user-cog me-1"></i> Edit
                                 </a>
                             </c:if>
+
+                            <a href="HistoryController" class="btn btn-outline-info btn-sm rounded-pill px-3 fw-bold">
+                                <i class="fas fa-history me-1"></i>Lịch Sử Đặt Vé
+                            </a>
 
                             <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
                                 <i class="fas fa-sign-out-alt me-1"></i>Đăng Xuất

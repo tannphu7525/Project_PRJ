@@ -12,8 +12,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.BookingDAO;
 import model.SeatDAO;
 import model.SeatDTO;
+import model.ShowtimeDAO;
+import model.ShowtimeDTO;
+import model.UserDTO;
 
 @WebServlet(name = "BookingController", urlPatterns = {"/BookingController"})
 public class BookingController extends HttpServlet {
@@ -26,7 +31,24 @@ public class BookingController extends HttpServlet {
 
         try {
             String action = request.getParameter("action");
-            if (action == null || action.equals("loadSeats")) {
+            String movieIDStr = request.getParameter("movieID");
+            if (action == null && movieIDStr == null) {
+                response.sendRedirect("welcome.jsp");
+                return;
+            }
+
+            // Tải danh sách Giờ chiếu của 1 Phim (khi khách bấm "Mua Vé Ngay")
+            if ("loadShowtimes".equals(action) || (action == null && movieIDStr != null)) {
+                int movieID = Integer.parseInt(movieIDStr);
+
+                ShowtimeDAO stDAO = new ShowtimeDAO();
+                ArrayList<ShowtimeDTO> stList = stDAO.getShowtimesByMovieID(movieID);
+
+                request.setAttribute("SHOWTIME_LIST", stList);
+                request.getRequestDispatcher("showtimes.jsp").forward(request, response);
+                return; 
+            }
+            if (action.equals("loadSeats")) {
                 int showtimeID = Integer.parseInt(request.getParameter("showtimeID"));
                 int roomID = Integer.parseInt(request.getParameter("roomID"));
 
@@ -38,9 +60,30 @@ public class BookingController extends HttpServlet {
                 request.setAttribute("CURRENT_SHOWTIME_ID", showtimeID);
                 request.setAttribute("CURRENT_ROOM_ID", roomID);
                 request.getRequestDispatcher("seat_map.jsp").forward(request, response);
-            } // Luồng 2: Xử lý khi khách bấm nút "Đặt vé" (Sẽ làm ở bước sau)
+            } // Luồng 2: Xử lý khi khách bấm nút "Đặt vé" 
             else if (action.equals("checkout")) {
-                // ... Xử lý Transaction thanh toán sẽ nằm ở đây
+                // 1. Nhận dữ liệu từ form ẩn của JS ném về
+                String selectedSeatsRaw = request.getParameter("selectedSeats"); // VD: "15,16,17"
+                int showtimeID = Integer.parseInt(request.getParameter("showtimeID"));
+                double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
+                HttpSession session = request.getSession();
+                UserDTO loginUser = (UserDTO) session.getAttribute("LOGIN_USER");
+                if (loginUser == null) {
+                    response.sendRedirect("login.jsp");
+                    return;
+                }
+                int userID = loginUser.getUserID();
+                String[] seatIDs = selectedSeatsRaw.split(",");
+
+                BookingDAO bookingDAO = new BookingDAO();
+                boolean isSuccess = bookingDAO.processCheckout(userID, showtimeID, seatIDs, totalAmount);
+                if (isSuccess) {
+                    request.getSession().setAttribute("MESSAGE", "Đặt vé thành công! Hóa đơn của bạn đã được ghi nhận.");
+                    response.sendRedirect("welcome.jsp");
+                } else {
+                    request.setAttribute("ERROR_MSG", "Rất tiếc, giao dịch thất bại hoặc ghế đã bị đặt. Xin vui lòng thử lại!");
+                    request.getRequestDispatcher("error.jsp").forward(request, response);
+                }
             }
 
         } catch (Exception e) {

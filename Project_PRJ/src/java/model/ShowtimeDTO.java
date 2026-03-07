@@ -18,7 +18,7 @@ public class ShowtimeDTO {
     private double price;
     private boolean status;
     
-    //2 biến phụ (để tiện hiển thị nếu cần UI)
+    //3 biến phụ (để tiện hiển thị nếu cần UI)
     private String movieTitle; 
     private String roomName;
     private String cinemaName;
