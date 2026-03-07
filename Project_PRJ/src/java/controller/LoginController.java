@@ -92,7 +92,6 @@ public class LoginController extends HttpServlet {
                     MovieDAO mDao = new MovieDAO();
                     ArrayList<MovieDTO> list = mDao.getAllMovie();
                     
-                    // QUAN TRỌNG: Đặt tên attribute là "LIST_MOVIE" để khớp với welcome.jsp
                     request.setAttribute("LIST_MOVIE", list);
                     
                     url = USER_PAGE;
