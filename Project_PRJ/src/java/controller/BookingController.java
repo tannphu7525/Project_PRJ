@@ -19,6 +19,8 @@ import model.SeatDTO;
 import model.ShowtimeDAO;
 import model.ShowtimeDTO;
 import model.UserDTO;
+import model.VoucherDAO;
+import model.VoucherDTO;
 
 @WebServlet(name = "BookingController", urlPatterns = {"/BookingController"})
 public class BookingController extends HttpServlet {
@@ -66,6 +68,8 @@ public class BookingController extends HttpServlet {
                 String selectedSeatsRaw = request.getParameter("selectedSeats"); // VD: "15,16,17"
                 int showtimeID = Integer.parseInt(request.getParameter("showtimeID"));
                 double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
+                String appliedVoucherCode = request.getParameter("appliedVoucherCode");
+                
                 HttpSession session = request.getSession();
                 UserDTO loginUser = (UserDTO) session.getAttribute("LOGIN_USER");
                 if (loginUser == null) {
@@ -73,11 +77,25 @@ public class BookingController extends HttpServlet {
                     return;
                 }
                 int userID = loginUser.getUserID();
+                
+                // BẢO MẬT VOUCHER 
+                VoucherDAO voucherDAO = new VoucherDAO();              
+                if (appliedVoucherCode != null && !appliedVoucherCode.trim().isEmpty()) {
+                    VoucherDTO checkVoucher = voucherDAO.getValidVoucher(appliedVoucherCode);
+                    
+                    if (checkVoucher == null) {
+                        request.setAttribute("ERROR_MSG", "Mã giảm giá không hợp lệ, đã hết lượt hoặc hết hạn. Giao dịch bị hủy!");
+                        request.getRequestDispatcher("error.jsp").forward(request, response);
+                        return; 
+                    }                   
+                }
                 String[] seatIDs = selectedSeatsRaw.split(",");
-
                 BookingDAO bookingDAO = new BookingDAO();
                 boolean isSuccess = bookingDAO.processCheckout(userID, showtimeID, seatIDs, totalAmount);
                 if (isSuccess) {
+                    if (appliedVoucherCode != null && !appliedVoucherCode.trim().isEmpty()) {
+                        voucherDAO.decreaseVoucherQuantity(appliedVoucherCode);
+                    }
                     request.getSession().setAttribute("MESSAGE", "Đặt vé thành công! Hóa đơn của bạn đã được ghi nhận.");
                     response.sendRedirect("welcome.jsp");
                 } else {
