@@ -35,7 +35,7 @@ public class BookingController extends HttpServlet {
             String action = request.getParameter("action");
             String movieIDStr = request.getParameter("movieID");
             if (action == null && movieIDStr == null) {
-                response.sendRedirect("welcome.jsp");
+                response.sendRedirect("HomeController");
                 return;
             }
 
@@ -97,7 +97,7 @@ public class BookingController extends HttpServlet {
                         voucherDAO.decreaseVoucherQuantity(appliedVoucherCode);
                     }
                     request.getSession().setAttribute("MESSAGE", "Đặt vé thành công! Hóa đơn của bạn đã được ghi nhận.");
-                    response.sendRedirect("welcome.jsp");
+                    response.sendRedirect("HomeController");
                 } else {
                     request.setAttribute("ERROR_MSG", "Rất tiếc, giao dịch thất bại hoặc ghế đã bị đặt. Xin vui lòng thử lại!");
                     request.getRequestDispatcher("error.jsp").forward(request, response);

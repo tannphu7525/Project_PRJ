@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controller;
 
 import java.io.IOException;
@@ -17,7 +12,7 @@ import model.MovieDTO;
 
 @WebServlet(name="AdminMovieController", urlPatterns={"/AdminMovieController"})
 public class AdminMovieController extends HttpServlet {
-   private static final String ADMIN_MOVIE_PAGE = "admin.jsp";
+    private static final String ADMIN_MOVIE_PAGE = "admin_movie.jsp";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -29,13 +24,14 @@ public class AdminMovieController extends HttpServlet {
         MovieDAO dao = new MovieDAO();
         
         try {
-            // TRƯỜNG HỢP 1: HIỂN THỊ DANH SÁCH (Mặc định)
+            // TRƯỜNG HỢP 1: HIỂN THỊ DANH SÁCH
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
                 ArrayList<MovieDTO> list = dao.getAllMovie();
-                request.setAttribute("ADMIN_MOVIE_LIST", list);
+                // SỬA LỖI: Đổi ADMIN_MOVIE_LIST thành LIST_MOVIE cho khớp với file JSP
+                request.setAttribute("LIST_MOVIE", list); 
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
             }
-            // TRƯỜNG HỢP 2: LẤY DỮ LIỆU ĐỂ SỬA (Khi nhấn Enter ở ô ID)
+            // TRƯỜNG HỢP 2: LẤY DỮ LIỆU ĐỂ SỬA
             else if (subAction.equals("edit")) {
                 int id = 0;
                 try {
@@ -53,13 +49,12 @@ public class AdminMovieController extends HttpServlet {
                     request.setAttribute("msg", "Không tìm thấy phim có ID = " + id);
                 }
                 
-                // Load lại danh sách và Forward để hiện Form có dữ liệu
-                request.setAttribute("ADMIN_MOVIE_LIST", dao.getAllMovie());
+                // SỬA LỖI: Đổi ADMIN_MOVIE_LIST thành LIST_MOVIE
+                request.setAttribute("LIST_MOVIE", dao.getAllMovie());
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
             }           
             // TRƯỜNG HỢP 3: THÊM PHIM MỚI
             else if (subAction.equals("add")) {
-                // 1. Lấy ID 
                 int idInput = 0;
                 try {
                     String idStr = request.getParameter("movieID");
@@ -82,12 +77,10 @@ public class AdminMovieController extends HttpServlet {
                 }
                 boolean status = request.getParameter("status") != null;
 
-                // 3. Kiểm tra trùng ID
                 if (idInput > 0 && dao.getMovieByID(idInput) != null) {
                     request.getSession().setAttribute("msg", "Lỗi: ID " + idInput + " đã tồn tại! Vui lòng chọn ID khác.");
                 } else {
                     MovieDTO movie = new MovieDTO(idInput, title, desc, poster, genre, price, status);
-                    
                     boolean checkInsert = dao.insertMovie(movie);
                     
                     if (checkInsert) {
@@ -97,27 +90,24 @@ public class AdminMovieController extends HttpServlet {
                     }
                 }
                 
-                response.sendRedirect("AdminMovieController?subAction=list");
+                // SỬA LỖI: Trả về thông qua MainController
+                response.sendRedirect("MainController?action=adminMovie&subAction=list");
             }
             
-            // -----------------------------------------------------------
-            // TRƯỜNG HỢP 4: XÓA PHIM (Dùng Redirect)
-            // -----------------------------------------------------------
+            // TRƯỜNG HỢP 4: XÓA PHIM
             else if (subAction.equals("delete")) {
                 int movieID = Integer.parseInt(request.getParameter("movieID"));
                 boolean checkDelete = dao.deleteMovie(movieID);              
                 
-                // SỬA LỖI: Dùng Session
                 if (checkDelete) {
                     request.getSession().setAttribute("msg", "Đã ngừng chiếu bộ phim!");
                 }
                 
-                response.sendRedirect("AdminMovieController?subAction=list");
+                // SỬA LỖI: Trả về thông qua MainController
+                response.sendRedirect("MainController?action=adminMovie&subAction=list");
             }
             
-            // -----------------------------------------------------------
-            // TRƯỜNG HỢP 5: CẬP NHẬT PHIM (Dùng Redirect)
-            // -----------------------------------------------------------
+            // TRƯỜNG HỢP 5: CẬP NHẬT PHIM
             else if (subAction.equals("update")) {
                 int movieID = Integer.parseInt(request.getParameter("movieID"));
                 String title = request.getParameter("title");
@@ -135,20 +125,20 @@ public class AdminMovieController extends HttpServlet {
                 MovieDTO movie = new MovieDTO(movieID, title, desc, poster, genre, price, status);              
                 boolean checkUpdate = dao.updateMovie(movie);
                 
-                // Dùng Session (Đã đúng)
                 if (checkUpdate) {
                     request.getSession().setAttribute("msg", "Cập nhật thành công!");
                 } else {
                     request.getSession().setAttribute("msg", "Cập nhật thất bại!");
-                }               
+                }                
                 
-                response.sendRedirect("AdminMovieController?subAction=list");
+                // SỬA LỖI: Trả về thông qua MainController
+                response.sendRedirect("MainController?action=adminMovie&subAction=list");
             }
             
         } catch (Exception e) {
             e.printStackTrace();
             request.getSession().setAttribute("msg", "Lỗi hệ thống: " + e.getMessage());
-            response.sendRedirect("AdminMovieController?subAction=list");
+            response.sendRedirect("MainController?action=adminMovie&subAction=list");
         }
     } 
 

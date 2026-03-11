@@ -73,7 +73,7 @@
     </head>
     <body>
         <div class="container">
-            <a href="welcome.jsp" class="btn-home">⬅ Về Trang Chủ</a>
+            <a href="HomeController" class="btn-home">⬅ Về Trang Chủ</a>
             <h2>LỊCH SỬ ĐẶT VÉ CỦA BẠN</h2>
 
             <table>
