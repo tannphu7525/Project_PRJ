@@ -16,7 +16,7 @@ import model.ShowtimeDTO;
 import model.VoucherDAO;
 import model.VoucherDTO;
 
-@WebServlet(name = "AdminController", urlPatterns = {"/AdminController"})
+@WebServlet(name = "AdminController", urlPatterns = { "/AdminController" })
 public class AdminController extends HttpServlet {
 
     private static final String ADMIN_MOVIE_PAGE = "admin_movie.jsp";
@@ -24,10 +24,6 @@ public class AdminController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-
         String action = request.getParameter("action");
 
         if (action == null || action.isEmpty()) {
@@ -55,7 +51,7 @@ public class AdminController extends HttpServlet {
             log("Error at AdminController: " + e.toString());
             request.setAttribute("msg", "Hệ thống quản trị đang gặp sự cố: " + e.getMessage());
             // SỬA LỖI 404: Không dùng sendRedirect ở đây nữa, dùng forward luôn
-            adminMovie(request, response); 
+            adminMovie(request, response);
         }
     }
 
@@ -71,11 +67,13 @@ public class AdminController extends HttpServlet {
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
                 request.setAttribute("LIST_MOVIE", dao.getAllMovie());
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
-            } 
-            else if (subAction.equals("edit")) {
+            } else if (subAction.equals("edit")) {
                 int id = 0;
-                try { id = Integer.parseInt(request.getParameter("movieID")); } 
-                catch (NumberFormatException e) { id = 0; }
+                try {
+                    id = Integer.parseInt(request.getParameter("movieID"));
+                } catch (NumberFormatException e) {
+                    id = 0;
+                }
 
                 MovieDTO movieToEdit = dao.getMovieByID(id);
                 if (movieToEdit != null) {
@@ -87,51 +85,60 @@ public class AdminController extends HttpServlet {
 
                 request.setAttribute("LIST_MOVIE", dao.getAllMovie());
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
-            } 
-            else if (subAction.equals("add")) {
+            } else if (subAction.equals("add")) {
                 int idInput = 0;
                 try {
                     String idStr = request.getParameter("movieID");
-                    if (idStr != null && !idStr.isEmpty()) idInput = Integer.parseInt(idStr);
-                } catch (NumberFormatException e) { idInput = 0; }
+                    if (idStr != null && !idStr.isEmpty())
+                        idInput = Integer.parseInt(idStr);
+                } catch (NumberFormatException e) {
+                    idInput = 0;
+                }
 
                 String title = request.getParameter("title");
                 String desc = request.getParameter("description");
                 String poster = request.getParameter("posterUrl");
                 String genre = request.getParameter("genre");
                 double price = 0;
-                try { price = Double.parseDouble(request.getParameter("basePrice")); } 
-                catch (NumberFormatException e) { price = 0; }
+                try {
+                    price = Double.parseDouble(request.getParameter("basePrice"));
+                } catch (NumberFormatException e) {
+                    price = 0;
+                }
                 boolean status = request.getParameter("status") != null;
 
                 if (idInput > 0 && dao.getMovieByID(idInput) != null) {
                     request.setAttribute("msg", "Lỗi: ID " + idInput + " đã tồn tại!");
                 } else {
-                    boolean checkInsert = dao.insertMovie(new MovieDTO(idInput, title, desc, poster, genre, price, status));
+                    boolean checkInsert = dao
+                            .insertMovie(new MovieDTO(idInput, title, desc, poster, genre, price, status));
                     request.setAttribute("msg", checkInsert ? "Thêm phim mới thành công!" : "Thêm phim thất bại!");
                 }
 
-                // SỬA LỖI 404: Load lại danh sách và đẩy thẳng ra trang JSP thay vì redirect vòng vèo
+                // SỬA LỖI 404: Load lại danh sách và đẩy thẳng ra trang JSP thay vì redirect
+                // vòng vèo
                 request.setAttribute("LIST_MOVIE", dao.getAllMovie());
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
-            } 
-            else if (subAction.equals("delete")) {
+            } else if (subAction.equals("delete")) {
                 int movieID = Integer.parseInt(request.getParameter("movieID"));
                 boolean checkDelete = dao.deleteMovie(movieID);
-                if (checkDelete) request.setAttribute("msg", "Đã ngừng chiếu bộ phim!");
-                
+                if (checkDelete)
+                    request.setAttribute("msg", "Đã ngừng chiếu bộ phim!");
+
                 request.setAttribute("LIST_MOVIE", dao.getAllMovie());
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
-            } 
-            else if (subAction.equals("update")) {
+            } else if (subAction.equals("update")) {
                 int movieID = Integer.parseInt(request.getParameter("movieID"));
                 String title = request.getParameter("title");
                 String desc = request.getParameter("description");
                 String poster = request.getParameter("posterUrl");
                 String genre = request.getParameter("genre");
                 double price = 0;
-                try { price = Double.parseDouble(request.getParameter("basePrice")); } 
-                catch (NumberFormatException e) { price = 0; }
+                try {
+                    price = Double.parseDouble(request.getParameter("basePrice"));
+                } catch (NumberFormatException e) {
+                    price = 0;
+                }
                 boolean status = request.getParameter("status") != null;
 
                 boolean checkUpdate = dao.updateMovie(new MovieDTO(movieID, title, desc, poster, genre, price, status));
@@ -142,7 +149,9 @@ public class AdminController extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg", "Lỗi hệ thống: " + e.getMessage());
+            java.io.StringWriter sw = new java.io.StringWriter();
+            e.printStackTrace(new java.io.PrintWriter(sw));
+            request.setAttribute("msg", "Lỗi Cụ Thể: " + e.toString() + " - " + sw.toString());
             request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
         }
     }
@@ -175,18 +184,19 @@ public class AdminController extends HttpServlet {
                 } else {
                     double price = Double.parseDouble(request.getParameter("price"));
                     boolean status = request.getParameter("status") != null;
-                    ShowtimeDTO newShowtime = new ShowtimeDTO(movieID, movieID, roomID, showDate, startTime, startTime, price, status, startTime, showDate, startTime);
+                    ShowtimeDTO newShowtime = new ShowtimeDTO(movieID, movieID, roomID, showDate, startTime, startTime,
+                            price, status, startTime, showDate, startTime);
 
                     boolean checkAdd = showTimeDAO.insertShowtimes(newShowtime);
                     request.setAttribute("msg", checkAdd ? "Tạo Lịch chiếu thành công!" : "Tạo Lịch chiếu thất bại!");
                 }
             }
-            
+
             // Luôn load lại dữ liệu rạp sau mỗi thao tác
             request.setAttribute("SHOWTIME_LIST", showTimeDAO.getAllShowtimes());
             request.setAttribute("MOVIE_LIST", movieDAO.getActiveMovie());
             request.setAttribute("ROOM_LIST", roomDAO.getAllActiveRoom());
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -205,19 +215,19 @@ public class AdminController extends HttpServlet {
         try {
             // 1. HIỂN THỊ DANH SÁCH VOUCHER
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
-                request.setAttribute("VOUCHER_LIST", dao.getAllVouchers()); 
+                request.setAttribute("VOUCHER_LIST", dao.getAllVouchers());
                 request.getRequestDispatcher("admin_voucher.jsp").forward(request, response);
-            } 
+            }
             // 2. TẢI DỮ LIỆU ĐỂ SỬA
             else if (subAction.equals("edit")) {
                 String code = request.getParameter("voucherCode");
-                VoucherDTO v = dao.getVoucherByCode(code); 
+                VoucherDTO v = dao.getVoucherByCode(code);
                 if (v != null) {
                     request.setAttribute("VOUCHER_EDIT", v);
                 }
                 request.setAttribute("VOUCHER_LIST", dao.getAllVouchers());
                 request.getRequestDispatcher("admin_voucher.jsp").forward(request, response);
-            } 
+            }
             // 3. THÊM VOUCHER MỚI
             else if (subAction.equals("add")) {
                 String code = request.getParameter("voucherCode").toUpperCase().trim();
@@ -231,11 +241,11 @@ public class AdminController extends HttpServlet {
                     request.getSession().setAttribute("msg", "LỖI: Mã Voucher này đã tồn tại!");
                 } else {
                     VoucherDTO newVoucher = new VoucherDTO(quantity, code, discount, quantity, expiryDate, status);
-                    boolean check = dao.insertVoucher(newVoucher); 
+                    boolean check = dao.insertVoucher(newVoucher);
                     request.getSession().setAttribute("msg", check ? "Thêm Voucher thành công!" : "Thêm thất bại!");
                 }
                 response.sendRedirect("MainController?action=adminVoucher&subAction=list");
-            } 
+            }
             // 4. CẬP NHẬT VOUCHER
             else if (subAction.equals("update")) {
                 String code = request.getParameter("voucherCode").toUpperCase().trim();
@@ -245,22 +255,25 @@ public class AdminController extends HttpServlet {
                 boolean status = request.getParameter("status") != null;
 
                 VoucherDTO v = new VoucherDTO(quantity, code, discount, quantity, expiryDate, status);
-                boolean check = dao.updateVoucher(v); 
+                boolean check = dao.updateVoucher(v);
                 request.getSession().setAttribute("msg", check ? "Cập nhật thành công!" : "Cập nhật thất bại!");
-                
+
                 response.sendRedirect("MainController?action=adminVoucher&subAction=list");
             }
             // 5. XÓA VOUCHER
             else if (subAction.equals("delete")) {
                 String code = request.getParameter("voucherCode");
-                boolean check = dao.deleteVoucher(code); 
-                if (check) request.getSession().setAttribute("msg", "Đã xóa mã Voucher!");
+                boolean check = dao.deleteVoucher(code);
+                if (check)
+                    request.getSession().setAttribute("msg", "Đã xóa mã Voucher!");
                 response.sendRedirect("MainController?action=adminVoucher&subAction=list");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.getSession().setAttribute("msg", "Lỗi hệ thống: " + e.getMessage());
+            java.io.StringWriter sw = new java.io.StringWriter();
+            e.printStackTrace(new java.io.PrintWriter(sw));
+            request.getSession().setAttribute("msg", "Lỗi Cụ Thể: " + e.toString() + " - " + sw.toString());
             response.sendRedirect("MainController?action=adminVoucher&subAction=list");
         }
     }

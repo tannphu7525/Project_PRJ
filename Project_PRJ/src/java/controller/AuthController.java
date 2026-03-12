@@ -23,7 +23,7 @@ import model.UserDTO;
  *
  * @author Cuong
  */
-@WebServlet(name = "AuthController", urlPatterns = {"/AuthController"})
+@WebServlet(name = "AuthController", urlPatterns = { "/AuthController" })
 public class AuthController extends HttpServlet {
 
     private static final String ERROR_PAGE = "error.jsp";
@@ -35,10 +35,6 @@ public class AuthController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-
         String action = request.getParameter("action");
         if (action == null || action.isEmpty()) {
             doLogin(request, response);
@@ -73,9 +69,6 @@ public class AuthController extends HttpServlet {
 
     protected void doLogin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
         String txtUsername = request.getParameter("username");
         String txtPassword = request.getParameter("password");
         String checkRemember = request.getParameter("remember");
@@ -118,9 +111,10 @@ public class AuthController extends HttpServlet {
 
                 // --- Phân quyền & Lấy dữ liệu ---
                 // Giả sử RoleID của admin là "AD" và user là "US"
-                if ("AD".equals(user.getRole())) {
+                if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                     // Redirect thẳng lên MainController để tải list, không dùng forward
-                    response.sendRedirect(request.getContextPath() + "/MainController?action=adminMovie&subAction=list");
+                    response.sendRedirect(
+                            request.getContextPath() + "/MainController?action=adminMovie&subAction=list");
                     return;
                 } else {
                     MovieDAO mDao = new MovieDAO();
@@ -135,13 +129,11 @@ public class AuthController extends HttpServlet {
 
     protected void doLogOut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        // 2. Xóa Cookie 
+        // 2. Xóa Cookie
         Cookie logoutCookie = new Cookie("c_user", "");
         logoutCookie.setMaxAge(0);
         logoutCookie.setHttpOnly(true);
@@ -153,10 +145,6 @@ public class AuthController extends HttpServlet {
 
     protected void doRegister(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
         String username = request.getParameter("username");
         String fullName = request.getParameter("fullName");
         String password = request.getParameter("password");
