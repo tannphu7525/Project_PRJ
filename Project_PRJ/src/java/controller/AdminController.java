@@ -41,7 +41,7 @@ public class AdminController extends HttpServlet {
                     adminMovie(request, response);
                     break;
                 case "adminShowtime":
-                    adminShowtime(request, response); // Đã sửa lỗi chính tả amin -> admin
+                    adminShowtime(request, response);
                     break;
                 case "adminVoucher":
                     adminVoucher(request, response);
@@ -206,7 +206,7 @@ public class AdminController extends HttpServlet {
             // 1. HIỂN THỊ DANH SÁCH VOUCHER
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
                 request.setAttribute("VOUCHER_LIST", dao.getAllVouchers()); 
-                request.getRequestDispatcher(subAction).forward(request, response);
+                request.getRequestDispatcher("admin_voucher.jsp").forward(request, response);
             } 
             // 2. TẢI DỮ LIỆU ĐỂ SỬA
             else if (subAction.equals("edit")) {
@@ -216,7 +216,7 @@ public class AdminController extends HttpServlet {
                     request.setAttribute("VOUCHER_EDIT", v);
                 }
                 request.setAttribute("VOUCHER_LIST", dao.getAllVouchers());
-                request.getRequestDispatcher(code).forward(request, response);
+                request.getRequestDispatcher("admin_voucher.jsp").forward(request, response);
             } 
             // 3. THÊM VOUCHER MỚI
             else if (subAction.equals("add")) {

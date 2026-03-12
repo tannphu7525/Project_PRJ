@@ -43,12 +43,9 @@ public class BookingController extends HttpServlet {
                 case "booking":
                     doBooking(request, response);
                     break;
-
                 case "history":
                     doHistory(request, response);
-                    break;
-                
-
+                    break;                
                 default:
                     request.setAttribute("error", "Hành động không hợp lệ: " + action);
                     doBooking(request, response);

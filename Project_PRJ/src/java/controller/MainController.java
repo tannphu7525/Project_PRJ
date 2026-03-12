@@ -50,12 +50,10 @@ public class MainController extends HttpServlet {
                 break;
              case "adminVoucher":
                 url = ADMIN_VOUCHER_CONTROLLER;
-                break;
-                
+                break;               
             case "checkvoucher":
                 url = "VoucherController";
                 break;
-
             default:
                 url = LOGIN_PAGE;
                 System.err.println("Action không xác định: " + action);
