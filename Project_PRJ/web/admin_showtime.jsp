@@ -113,7 +113,7 @@
                     <i class="fas fa-film me-2"></i>PRJ CINEMA <span class="text-white fs-6 ms-2 fw-normal">| Hệ thống Quản trị</span>
                 </a>
                 <div class="d-flex align-items-center">
-                    <span class="text-light me-3">Xin chào, <b class="text-warning">${sessionScope.LOGIN_USER.fullName}</b></span>
+                    
                     <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
                         <i class="fas fa-sign-out-alt me-1"></i> Thoát
                     </a>

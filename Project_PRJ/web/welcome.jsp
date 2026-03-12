@@ -77,7 +77,6 @@
                 color: var(--accent-blue);
                 border-left: 5px solid var(--accent-blue);
                 padding-left: 15px;
-                margin-bottom: 30px;
             }
             .card-title {
                 color: var(--text-main);
@@ -102,6 +101,25 @@
             .user-name {
                 font-weight: bold;
                 color: var(--accent-blue);
+            }
+
+            /* Tùy chỉnh thanh tìm kiếm */
+            .search-input {
+                background-color: #0f172a;
+                border: 1px solid #334155;
+                color: white;
+                border-radius: 25px 0 0 25px;
+            }
+            .search-input:focus {
+                background-color: #0f172a;
+                color: white;
+                border-color: var(--accent-blue);
+                box-shadow: none;
+            }
+            .search-btn {
+                border-radius: 0 25px 25px 0;
+                padding-left: 20px;
+                padding-right: 20px;
             }
         </style>
     </head>
@@ -134,28 +152,25 @@
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">
-
                         <c:if test="${not empty sessionScope.LOGIN_USER}">
-
                             <div class="text-end d-none d-lg-block me-3">
                                 <span class="d-block small text-muted" style="font-size: 0.75rem;">Xin chào,</span>
                                 <span class="user-name">${sessionScope.LOGIN_USER.fullName}</span>
                             </div>
 
                             <c:if test="${sessionScope.LOGIN_USER.role eq 'ADMIN'}">
-                                <a href="AdminMovieController?subAction=list" class="btn btn-outline-warning btn-sm rounded-pill px-3 fw-bold">
+                                <a href="MainController?action=adminMovie&subAction=list" class="btn btn-outline-warning btn-sm rounded-pill px-3 fw-bold">
                                     <i class="fas fa-user-cog me-1"></i> Edit
                                 </a>
                             </c:if>
 
-                            <a href="HistoryController" class="btn btn-outline-info btn-sm rounded-pill px-3 fw-bold">
+                            <a href="BookingController?action=history" class="btn btn-outline-info btn-sm...">
                                 <i class="fas fa-history me-1"></i>Lịch Sử Đặt Vé
                             </a>
 
                             <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
                                 <i class="fas fa-sign-out-alt me-1"></i>Đăng Xuất
                             </a>
-
                         </c:if>
                     </div>
                 </div>
@@ -170,14 +185,17 @@
         </div>
 
         <div class="container mb-5">
-            <h3 class="fw-bold section-title">PHIM ĐANG CHIẾU</h3>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                <h3 class="fw-bold section-title mb-0">PHIM ĐANG CHIẾU</h3>
+
+
+            </div>
+
+
 
             <div class="row g-4">
-                <c:if test="${empty LIST_MOVIE}">
-                    <div class="col-12 text-center text-muted">
-                        <p>Danh sách phim trống. Vui lòng kiểm tra Controller.</p>
-                    </div>
-                </c:if>
+
 
                 <c:forEach items="${LIST_MOVIE}" var="movie">
                     <c:if test="${movie.status == true}">
@@ -203,7 +221,7 @@
         </div>
 
         <footer class="text-center py-4 mt-5">
-            <p class="mb-0 text-muted">&copy; 2024 PRJ Cinema. All rights reserved.</p>
+            <p class="mb-0 text-muted">&copy; 2026 PRJ Cinema. All rights reserved.</p>
         </footer>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

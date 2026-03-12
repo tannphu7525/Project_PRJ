@@ -7,17 +7,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "MainController", urlPatterns = { "/MainController" })
+@WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
 
     private static final String LOGIN_PAGE = "index.jsp";
-    private static final String LOGIN_CONTROLLER = "LoginController";
-    private static final String LOGOUT_CONTROLLER = "LogoutController";
-    private static final String REGISTER_CONTROLLER = "RegisterController";
-    private static final String ADMIN_MOVIE_CONTROLLER = "AdminMovieController";
-    private static final String ADMIN_SHOWTIME_CONTROLLER = "AdminShowtimeController";
-    
-    
+    private static final String LOGIN_CONTROLLER = "AuthController";
+    private static final String LOGOUT_CONTROLLER = "AuthController";
+    private static final String REGISTER_CONTROLLER = "AuthController";
+    private static final String ADMIN_MOVIE_CONTROLLER = "AdminController";
+    private static final String ADMIN_SHOWTIME_CONTROLLER = "AdminController";
+    private static final String ADMIN_VOUCHER_CONTROLLER = "AdminController";
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -48,6 +48,14 @@ public class MainController extends HttpServlet {
             case "adminShowtime":
                 url = ADMIN_SHOWTIME_CONTROLLER;
                 break;
+             case "adminVoucher":
+                url = ADMIN_VOUCHER_CONTROLLER;
+                break;
+                
+            case "checkvoucher":
+                url = "VoucherController";
+                break;
+
             default:
                 url = LOGIN_PAGE;
                 System.err.println("Action không xác định: " + action);

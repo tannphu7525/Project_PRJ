@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.BookingDAO;
+import model.OrderHistoryDTO;
 import model.SeatDAO;
 import model.SeatDTO;
 import model.ShowtimeDAO;
@@ -24,8 +25,44 @@ import model.VoucherDTO;
 
 @WebServlet(name = "BookingController", urlPatterns = {"/BookingController"})
 public class BookingController extends HttpServlet {
-
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+         request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+
+        String action = request.getParameter("action");
+        if (action == null || action.isEmpty()) {
+            doBooking(request, response);
+            return;
+        }
+
+        try {
+            switch (action) {
+                case "booking":
+                    doBooking(request, response);
+                    break;
+
+                case "history":
+                    doHistory(request, response);
+                    break;
+                
+
+                default:
+                    request.setAttribute("error", "Hành động không hợp lệ: " + action);
+                    doBooking(request, response);
+                    break;
+            }
+        } catch (Exception e) {
+            log("Error at UserController: " + e.toString());
+            request.setAttribute("error", "Hệ thống đang gặp sự cố, vui lòng thử lại sau.");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+
+        }
+    }
+
+    protected void doBooking(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
@@ -103,6 +140,30 @@ public class BookingController extends HttpServlet {
                     request.getRequestDispatcher("error.jsp").forward(request, response);
                 }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+    
+    protected void doHistory(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+
+        try {
+            HttpSession session = request.getSession();
+            UserDTO loginUser = (UserDTO) session.getAttribute("LOGIN_USER");
+
+            if (loginUser == null) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+            BookingDAO dao = new BookingDAO();
+            ArrayList<OrderHistoryDTO> historyList = dao.getOrderHistoryByUserID(loginUser.getUserID());
+
+            request.setAttribute("HISTORY_LIST", historyList);
+            request.getRequestDispatcher("history.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

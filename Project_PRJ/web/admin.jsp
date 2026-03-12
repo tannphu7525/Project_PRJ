@@ -8,11 +8,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Admin Dashboard - PRJ Cinema</title>
-        
+
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-        
+
         <style>
             :root {
                 --bg-body: #111827; /* Màu nền tối hơn cho Dashboard */
@@ -92,7 +92,9 @@
                 margin-bottom: 25px;
                 text-transform: uppercase;
             }
-            .table-dark { background-color: transparent; }
+            .table-dark {
+                background-color: transparent;
+            }
             .table-dark th {
                 background-color: #111827;
                 color: var(--accent-blue);
@@ -103,12 +105,19 @@
                 border-color: var(--border-color);
                 vertical-align: middle;
             }
-            .form-label { font-weight: 500; color: #cbd5e1; }
+            .form-label {
+                font-weight: 500;
+                color: #cbd5e1;
+            }
             .form-control, .form-select {
-                background-color: #0f172a; border: 1px solid var(--border-color); color: white;
+                background-color: #0f172a;
+                border: 1px solid var(--border-color);
+                color: white;
             }
             .form-control:focus, .form-select:focus {
-                border-color: var(--accent-blue); color: white; background-color: #0f172a;
+                border-color: var(--accent-blue);
+                color: white;
+                background-color: #0f172a;
                 box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
             }
         </style>
@@ -117,11 +126,11 @@
 
         <nav class="navbar navbar-expand-lg sticky-top">
             <div class="container-fluid px-4">
-                <a class="navbar-brand fw-bold" href="HomeController">
+                <a class="navbar-brand fw-bold" href="MainController?action=adminMovie&subAction=list">
                     <i class="fas fa-film me-2"></i>PRJ CINEMA <span class="text-white fs-6 ms-2 fw-normal">| Hệ thống Quản trị</span>
                 </a>
                 <div class="d-flex align-items-center">
-                    <span class="text-light me-3">Xin chào, <b class="text-warning">${sessionScope.LOGIN_USER.fullName}</b></span>
+                   
                     <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
                         <i class="fas fa-sign-out-alt me-1"></i> Thoát
                     </a>
@@ -131,21 +140,21 @@
 
         <div class="container-fluid">
             <div class="row">   
-                
+
                 <div class="col-md-3 col-lg-2 p-0 sidebar d-none d-md-block position-sticky overflow-auto" style="top: 70px; height: calc(100vh - 70px);">
-                    
+
                     <a href="HomeController" class="sidebar-link">
                         <i class="fas fa-home"></i> Trang chủ
                     </a>
-                    
+
                     <a href="MainController?action=adminMovie" class="sidebar-link">
                         <i class="fas fa-video"></i> Quản lý Phim
                     </a>
-                    
+
                     <a href="MainController?action=adminShowtime&subAction=list" class="sidebar-link active">
                         <i class="fas fa-calendar-alt"></i> Quản lý Lịch chiếu
                     </a>
-                    
+
                     <a href="MainController?action=adminVoucher" class="sidebar-link">
                         <i class="fas fa-ticket-alt"></i> Quản lý Voucher
                     </a>
@@ -156,7 +165,7 @@
                 </div>
 
                 <div class="col-md-9 col-lg-10 main-content">
-                    
+
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="fw-bold mb-0 text-white">QUẢN LÝ LỊCH CHIẾU</h2>
                         <a href="MainController?action=adminShowtime&subAction=list" class="btn btn-info px-4 rounded-pill fw-bold">
@@ -173,7 +182,7 @@
 
                     <div class="admin-card">
                         <h4 class="card-title"><i class="fas fa-calendar-plus me-2"></i>Thêm Lịch Chiếu Mới</h4>
-                        
+
                         <form action="MainController" method="POST" class="row g-3">
                             <input type="hidden" name="action" value="adminShowtime">
                             <input type="hidden" name="subAction" value="add">
@@ -234,7 +243,7 @@
 
                     <div class="admin-card">
                         <h4 class="card-title"><i class="fas fa-list me-2"></i>Danh sách Lịch Chiếu</h4>
-                        
+
                         <div class="table-responsive">
                             <table class="table table-dark table-hover table-bordered align-middle text-center mb-0">
                                 <thead>
