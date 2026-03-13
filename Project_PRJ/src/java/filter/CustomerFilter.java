@@ -20,11 +20,7 @@ import model.UserDTO;
  *
  * Thêm các trang cần bảo vệ vào urlPatterns bên dưới.
  */
-@WebFilter(filterName = "CustomerFilter", urlPatterns = {
-        "/history.jsp",
-        "/seat_map.jsp"
-        // Thêm: "/payment.jsp", v.v. khi có trang mới
-})
+@WebFilter(filterName = "CustomerFilter", urlPatterns = {"/history.jsp", "/seat_map.jsp"})
 public class CustomerFilter implements Filter {
 
     @Override
