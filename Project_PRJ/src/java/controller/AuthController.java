@@ -23,7 +23,7 @@ import model.UserDTO;
  *
  * @author Cuong
  */
-@WebServlet(name = "AuthController", urlPatterns = { "/AuthController" })
+@WebServlet(name = "AuthController", urlPatterns = {"/AuthController"})
 public class AuthController extends HttpServlet {
 
     private static final String ERROR_PAGE = "error.jsp";
@@ -171,11 +171,25 @@ public class AuthController extends HttpServlet {
                     boolean isSuccess = dao.registerUser(newUser);
 
                     if (isSuccess) {
-                        msg = "Đăng ký thành công! Vui lòng đăng nhập.";
-                        request.setAttribute("msg", msg);
-                        url = SUCCESS_PAGE;
+                        // 1. Luồng chính: Báo thành công và chuyển ngay lập tức sang trang Login
+                        msg = "Đăng ký thành công! Vui lòng kiểm tra hộp thư Email của bạn.";
+                        request.setAttribute("msg", msg); // Trang login dùng biến "error" để hiển thị msg
+                        url = SUCCESS_PAGE; // (login.jsp)
+
+                        // 2. Luồng phụ (Async Thread): Gọi EmailService chạy ngầm
+                        final String toEmail = email;
+                        final String toName = fullName;
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Gọi hàm gửi mail từ class EmailService mà bạn đã viết hôm qua
+                                util.EmailService.sendWelcomeEmail(toEmail, toName);
+                            }
+                        }).start();
+
                     } else {
-                        msg = "Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại.";
+                        msg = "Có lỗi xảy ra trong quá trình ghi dữ liệu. Vui lòng thử lại.";
                         request.setAttribute("msg", msg);
                     }
                 }

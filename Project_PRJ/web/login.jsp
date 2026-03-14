@@ -14,6 +14,7 @@
         }
     }
     String error = (String) request.getAttribute("error");
+    String msg = (String) request.getAttribute("msg");
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -156,6 +157,17 @@
                         <div><%= error%></div>
                     </div>
                     <% }%>
+                    
+                    <%-- HIỂN THỊ THÔNG BÁO THÀNH CÔNG (TỪ TRANG ĐĂNG KÝ TRUYỀN VỀ) --%>
+                    <% 
+                        String successMsg = (String) request.getAttribute("msg");
+                        if (successMsg != null && !successMsg.isEmpty()) { 
+                    %>
+                    <div class="alert alert-success py-2 small d-flex align-items-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <div><%= successMsg %></div>
+                    </div>
+                    <% } %>
 
                     <form action="MainController" method="POST">
                         <input type="hidden" name="action" value="login"/>
