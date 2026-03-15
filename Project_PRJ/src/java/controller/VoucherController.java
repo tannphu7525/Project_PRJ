@@ -18,7 +18,7 @@ import model.VoucherDTO;
  *
  * @author Cuong
  */
-@WebServlet(name = "java", urlPatterns = {"/java"})
+@WebServlet(name = "VoucherController", urlPatterns = {"/VoucherController"})
 public class VoucherController extends HttpServlet {
 
     /**

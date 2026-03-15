@@ -240,7 +240,7 @@ public class AdminController extends HttpServlet {
                 if (dao.getVoucherByCode(code) != null) {
                     request.getSession().setAttribute("msg", "LỖI: Mã Voucher này đã tồn tại!");
                 } else {
-                    VoucherDTO newVoucher = new VoucherDTO(quantity, code, discount, quantity, expiryDate, status);
+                    VoucherDTO newVoucher = new VoucherDTO(0, code, discount, quantity, expiryDate, status);
                     boolean check = dao.insertVoucher(newVoucher);
                     request.getSession().setAttribute("msg", check ? "Thêm Voucher thành công!" : "Thêm thất bại!");
                 }
@@ -254,7 +254,7 @@ public class AdminController extends HttpServlet {
                 String expiryDate = request.getParameter("expiryDate");
                 boolean status = request.getParameter("status") != null;
 
-                VoucherDTO v = new VoucherDTO(quantity, code, discount, quantity, expiryDate, status);
+                VoucherDTO v = new VoucherDTO(0, code, discount, quantity, expiryDate, status);
                 boolean check = dao.updateVoucher(v);
                 request.getSession().setAttribute("msg", check ? "Cập nhật thành công!" : "Cập nhật thất bại!");
 
