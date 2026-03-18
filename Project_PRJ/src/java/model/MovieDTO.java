@@ -16,10 +16,24 @@ public class MovieDTO {
     private String genre;
     private double basePrice;
     private boolean status;
-
+    private double avgRating;
+    
     public MovieDTO() {
     }
 
+    //Constructor đầy đủ
+    public MovieDTO(int movieID, String title, String description, String posterUrl, String genre, double basePrice, boolean status, double avgRating) {
+        this.movieID = movieID;
+        this.title = title;
+        this.description = description;
+        this.posterUrl = posterUrl;
+        this.genre = genre;
+        this.basePrice = basePrice;
+        this.status = status;
+        this.avgRating = avgRating;
+    }    
+    
+    //Constructor dùng cho AdminController
     public MovieDTO(int movieID, String title, String description, String posterUrl, String genre, double basePrice, boolean status) {
         this.movieID = movieID;
         this.title = title;
@@ -28,7 +42,7 @@ public class MovieDTO {
         this.genre = genre;
         this.basePrice = basePrice;
         this.status = status;
-    }
+    }        
 
     public int getMovieID() {
         return movieID;
@@ -86,4 +100,12 @@ public class MovieDTO {
         this.status = status;
     }
 
+    public double getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(double avgRating) {
+        this.avgRating = avgRating;
+    }
+    
 }

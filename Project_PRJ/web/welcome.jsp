@@ -219,8 +219,8 @@
                                         <fmt:formatNumber value="${movie.basePrice}" type="number" pattern="#,###"/> đ
                                     </h6>
 
-                                    <a href="BookingController?movieID=${movie.movieID}" class="btn btn-primary mt-auto w-100 fw-bold rounded-pill">
-                                        <i class="fas fa-ticket-alt me-2"></i>Mua Vé Ngay
+                                    <a href="HomeController?action=movieDetail&id=${movie.movieID}" class="btn btn-primary mt-auto w-100 fw-bold rounded-pill">
+                                        <i class="fas fa-info-circle me-2"></i>Xem Chi Tiết
                                     </a>
                                 </div>
                             </div>

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.sql.Connection;
@@ -10,10 +6,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import util.DBUtils;
 
-/**
- *
- * @author admin
- */
 public class MovieDAO {
     //CRUD
 
@@ -57,8 +49,9 @@ public class MovieDAO {
                     String genre = rs.getString("genre");
                     double basePrice = rs.getDouble("basePrice");
                     boolean status = rs.getBoolean("status");
-
-                    MovieDTO movie = new MovieDTO(movieID, title, description, posterUrl, genre, basePrice, status);
+                    double avgRating = rs.getDouble("Avg_Rating");
+                    
+                    MovieDTO movie = new MovieDTO(movieID, title, description, posterUrl, genre, basePrice, status, avgRating);
                     list.add(movie);
                 }
             }
@@ -81,8 +74,9 @@ public class MovieDAO {
                     String genre = rs.getString("genre");
                     double basePrice = rs.getDouble("basePrice");
                     boolean status = rs.getBoolean("status");
-
-                    MovieDTO movie = new MovieDTO(movieID, title, description, posterUrl, genre, basePrice, status);
+                    double avgRating = rs.getDouble("Avg_Rating");
+                  
+                    MovieDTO movie = new MovieDTO(movieID, title, description, posterUrl, genre, basePrice, status, avgRating);
                     list.add(movie);
                 }
             }
@@ -105,7 +99,8 @@ public class MovieDAO {
                             rs.getString("PosterUrl"),
                             rs.getString("Genre"),
                             rs.getDouble("BasePrice"),
-                            rs.getBoolean("Status")
+                            rs.getBoolean("Status"),
+                            rs.getDouble("Avg_Rating") // Bổ sung trường này
                     );
                 }
             }
@@ -120,16 +115,13 @@ public class MovieDAO {
         boolean check = false;
         String sql;
 
-        // TRƯỜNG HỢP 1: MUỐN TỰ NHẬP ID (ĐIỀN VÀO CHỖ TRỐNG)
         if (movie.getMovieID() > 0) {
-            // Câu lệnh phức tạp hơn: Bật cho phép nhập ID -> Insert -> Tắt đi
             sql = "SET IDENTITY_INSERT Movies ON; "
                     + "INSERT INTO [dbo].[Movies] "
                     + "([MovieID], [Title], [Description], [PosterUrl], [Genre], [BasePrice], [Status]) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?); "
                     + "SET IDENTITY_INSERT Movies OFF;";
-        } // TRƯỜNG HỢP 2: ĐỂ TỰ ĐỘNG TĂNG (ID = 0)
-        else {
+        } else {
             sql = "INSERT INTO [dbo].[Movies] "
                     + "([Title], [Description], [PosterUrl], [Genre], [BasePrice], [Status]) "
                     + "VALUES (?, ?, ?, ?, ?, ?)";
@@ -138,7 +130,6 @@ public class MovieDAO {
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement stm = conn.prepareStatement(sql)) {
 
             if (movie.getMovieID() > 0) {
-                // Nếu tự nhập ID, phải set tham số ID đầu tiên
                 stm.setInt(1, movie.getMovieID());
                 stm.setString(2, movie.getTitle());
                 stm.setString(3, movie.getDescription());
@@ -147,7 +138,6 @@ public class MovieDAO {
                 stm.setDouble(6, movie.getBasePrice());
                 stm.setBoolean(7, movie.isStatus());
             } else {
-                // Nếu tự động, bỏ qua ID
                 stm.setString(1, movie.getTitle());
                 stm.setString(2, movie.getDescription());
                 stm.setString(3, movie.getPosterUrl());
@@ -201,22 +191,24 @@ public class MovieDAO {
                 PreparedStatement ps = conn.prepareStatement(SEARCH_MOVIE)) {
             ps.setString(1, keyword);
             ps.setString(2, keyword);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new MovieDTO(
-                        rs.getInt("movieID"),
-                        rs.getString("title"),
-                        rs.getString("description"),
-                        rs.getString("posterUrl"),
-                        rs.getString("genre"),
-                        rs.getDouble("basePrice"),
-                        rs.getBoolean("status")
-                ));
+            // Đã bọc rs vào try-with-resources để chống leak memory
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new MovieDTO(
+                            rs.getInt("movieID"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getString("posterUrl"),
+                            rs.getString("genre"),
+                            rs.getDouble("basePrice"),
+                            rs.getBoolean("status"), 
+                            rs.getDouble("Avg_Rating") // Bổ sung trường này
+                    ));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
-
 }

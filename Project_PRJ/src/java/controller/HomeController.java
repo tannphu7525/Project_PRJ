@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.MovieDAO;
 import model.MovieDTO;
+import model.ReviewDAO;
+import model.UserDTO;
 
 public class HomeController extends HttpServlet {
 
@@ -23,37 +25,57 @@ public class HomeController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        // 1. Lấy từ khóa tìm kiếm (nếu có)
-        String searchKeyword = request.getParameter("search");
+        String action = request.getParameter("action");
         MovieDAO dao = new MovieDAO();
+
+        //XEM CHI TIẾT PHIM
+        if ("movieDetail".equals(action)) {
+            try {
+                int movieID = Integer.parseInt(request.getParameter("id"));
+                MovieDTO movie = dao.getMovieByID(movieID);
+                if (movie != null) {
+                    request.setAttribute("MOVIE_DETAIL", movie);
+                    model.ReviewDAO reviewDAO = new model.ReviewDAO();                    
+                    // Lấy toàn bộ bình luận 
+                    request.setAttribute("REVIEW_LIST", reviewDAO.getReviewsByMovieID(movieID));                  
+                    // User có quyền Đánh giá không?
+                    boolean canReview = false;
+                    HttpSession session = request.getSession();
+                    UserDTO loginUser = (UserDTO) session.getAttribute("LOGIN_USER");
+                    if (loginUser != null) {
+                        canReview = reviewDAO.checkCanReview(loginUser.getUserID(), movieID);
+                    }
+                    request.setAttribute("CAN_REVIEW", canReview);
+                    request.getRequestDispatcher("movie_detail.jsp").forward(request, response);
+                    return; 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Thanh Search Movie và Load List Movie
+        String searchKeyword = request.getParameter("search");
         ArrayList<MovieDTO> list;
 
-        // 2. Kiểm tra nếu có gõ tìm kiếm -> Gọi hàm search, ngược lại -> Load tất cả
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
             list = dao.searchMovies(searchKeyword);
-            request.setAttribute("SEARCH_KEYWORD", searchKeyword); // Giữ lại từ khóa trên ô input
+            request.setAttribute("SEARCH_KEYWORD", searchKeyword);
         } else {
             list = dao.getAllMovie();
         }
         request.setAttribute("LIST_MOVIE", list);
-        
-        // 2. Kiểm tra Session để biết đã đăng nhập hay chưa
+
         HttpSession session = request.getSession();
-        Object user = session.getAttribute("LOGIN_USER"); // Lấy user từ session
+        Object user = session.getAttribute("LOGIN_USER");
 
         String url = "";
-
         if (user != null) {
-            // TRƯỜNG HỢP: ĐÃ ĐĂNG NHẬP
-            // Chuyển sang trang welcome.jsp (Giao diện cho thành viên)
             url = "welcome.jsp";
         } else {
-            // TRƯỜNG HỢP: CHƯA ĐĂNG NHẬP (KHÁCH)
-            // Chuyển sang trang index.jsp (Giao diện có nút Đăng nhập/Đăng ký)
             url = "index.jsp";
         }
 
-        // 3. Chuyển hướng đến trang đích đã chọn
         request.getRequestDispatcher(url).forward(request, response);
     }
 

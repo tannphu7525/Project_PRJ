@@ -157,23 +157,10 @@
                                 <h5 class="card-title fw-bold">${movie.title}</h5>
                                 <p class="text-muted small mb-3">${movie.genre}</p>
 
-                                <%-- KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP --%>
-                                <c:choose>
-                                    <%-- TRƯỜNG HỢP 1: ĐÃ ĐĂNG NHẬP (Có biến LOGIN_USER trong session) --%>
-                                    <c:when test="${not empty sessionScope.LOGIN_USER}">
-                                        <a href="welcome.jsp?id=${movie.movieID}" class="btn btn-primary mt-auto w-100 fw-bold rounded-pill">
-                                            Mua Vé Ngay
-                                        </a>
-                                    </c:when>
-
-                                    <%-- TRƯỜNG HỢP 2: CHƯA ĐĂNG NHẬP (Session rỗng) --%>
-                                    <c:otherwise>
-                                        <a href="login.jsp" class="btn btn-primary mt-auto w-100 fw-bold rounded-pill">
-                                            Mua Vé Ngay
-                                        </a>
-                                    </c:otherwise>
-                                </c:choose>
-                                <%-- KẾT THÚC KIỂM TRA --%>
+                                <%-- NÚT XEM CHI TIẾT DÀNH CHO TẤT CẢ MỌI NGƯỜI --%>
+                                <a href="HomeController?action=movieDetail&id=${movie.movieID}" class="btn btn-primary mt-auto w-100 fw-bold rounded-pill">
+                                    <i class="fas fa-info-circle me-2"></i>Xem Chi Tiết
+                                </a>
 
                             </div>
                         </div>
