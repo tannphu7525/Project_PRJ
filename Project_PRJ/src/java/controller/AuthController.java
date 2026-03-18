@@ -161,7 +161,7 @@ public class AuthController extends HttpServlet {
                 if (dao.checkDuplicateUsername(username)) {
                     msg = "Username này đã được sử dụng. Vui lòng chọn Username khác";
                     request.setAttribute("msg", msg);
-                } else if (dao.checkDuplicateEmail(email)) {
+                } else if (dao.checkEmailExist(email)) {
                     msg = "Email này đã được sử dụng để đăng ký tài khoản khác!";
                     request.setAttribute("msg", msg);
                 } else {

@@ -13,9 +13,9 @@ import javax.servlet.http.HttpSession;
 import model.UserDTO;
 
 /**
- * AuthenFilter: Bảo vệ trang Login / Register.
- * - Nếu user ĐÃ đăng nhập mà còn vào trang Login → redirect về Home.
- * - Nếu chưa đăng nhập → cho đi qua bình thường.
+ * AuthenFilter: Bảo vệ trang Login / Register. - Nếu user ĐÃ đăng nhập mà còn
+ * vào trang Login → redirect về Home. - Nếu chưa đăng nhập → cho đi qua bình
+ * thường.
  *
  * URL patterns: /index.jsp, /login.jsp, /AuthController (action=login,
  * register)
@@ -32,24 +32,12 @@ public class AuthenFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession(false); // Lấy session hiện tại
 
-        boolean isLoggedIn = false;
-
-        if (session != null) {
-            UserDTO loginUser = (UserDTO) session.getAttribute("LOGIN_USER");
-            if (loginUser != null) {
-                isLoggedIn = true;
-            }
-        }
-
-        String contextPath = req.getContextPath();
-
-        if (isLoggedIn) {
-            // Đã đăng nhập rồi, không cần vào trang login nữa → về trang chủ
-            res.sendRedirect(contextPath + "/HomeController");
+        // Kiểm tra xem User đã đăng nhập chưa 
+        if (session != null && session.getAttribute("LOGIN_USER") != null) {
+            res.sendRedirect(req.getContextPath() + "/HomeController");
         } else {
-            // Chưa đăng nhập → cho đi qua trang login bình thường
             chain.doFilter(request, response);
         }
     }
