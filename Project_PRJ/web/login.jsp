@@ -191,7 +191,11 @@
                             <label class="form-check-label small" for="rem">Ghi nhớ đăng nhập</label>
                         </div>
                         <button type="submit" class="btn btn-primary w-100 py-2 mb-3">ĐĂNG NHẬP</button>
-
+                        
+                        <div class="text-center mb-3">
+                            <a href="forgot_password.jsp" class="text-muted small text-decoration-none">Quên mật khẩu?</a>
+                        </div>
+                        
                         <p class="text-center small text-white">Chưa có tài khoản? 
                             <a href="register.jsp" class="register-link">Đăng ký ngay</a>
                         </p>
