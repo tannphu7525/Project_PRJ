@@ -128,7 +128,7 @@
             <div style="background-color: #d4edda; color: #155724; padding: 15px; text-align: center; border-bottom: 1px solid #c3e6cb;">
                 <h4 class="mb-2 fw-bold">${sessionScope.MESSAGE}</h4>
                 <p class="mb-0">
-                    👉 <a href="HistoryController" style="color: #0056b3; font-weight: bold; text-decoration: underline;">
+                    👉 <a href="BookingController?action=history" style="color: #0056b3; font-weight: bold; text-decoration: underline;">
                         Bấm vào đây để xem chi tiết vé điện tử của bạn
                     </a>
                 </p>
