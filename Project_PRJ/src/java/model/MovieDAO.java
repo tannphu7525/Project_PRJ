@@ -42,7 +42,8 @@ public class MovieDAO {
             + "      ,[BasePrice] = ?\n"
             + "      ,[Status] = ?\n"
             + " WHERE MovieID = ?";
-
+    private final static String SEARCH_MOVIE = "SELECT * FROM Movies WHERE Title LIKE N'%' + ? + '%' OR Genre LIKE N'%' + ? + '%'";
+    
     //Lấy ra tất cả Movie
     public ArrayList<MovieDTO> getAllMovie() {
         ArrayList<MovieDTO> list = new ArrayList<>();
@@ -193,5 +194,29 @@ public class MovieDAO {
         return checkUpdate;
     }
 
-    
+    // Tìm kiếm phim theo Tên HOẶC Thể loại
+    public ArrayList<MovieDTO> searchMovies(String keyword) {
+        ArrayList<MovieDTO> list = new ArrayList<>();
+        try ( Connection conn = DBUtils.getConnection();
+                PreparedStatement ps = conn.prepareStatement(SEARCH_MOVIE)) {
+            ps.setString(1, keyword);
+            ps.setString(2, keyword);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new MovieDTO(
+                        rs.getInt("movieID"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getString("posterUrl"),
+                        rs.getString("genre"),
+                        rs.getDouble("basePrice"),
+                        rs.getBoolean("status")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

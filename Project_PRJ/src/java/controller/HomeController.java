@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
 import java.io.IOException;
@@ -17,18 +16,27 @@ import model.MovieDAO;
 import model.MovieDTO;
 
 public class HomeController extends HttpServlet {
-   
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        // 1. Luôn luôn lấy danh sách phim trước (Vì trang nào cũng cần hiện phim)
+        // 1. Lấy từ khóa tìm kiếm (nếu có)
+        String searchKeyword = request.getParameter("search");
         MovieDAO dao = new MovieDAO();
-        ArrayList<MovieDTO> list = dao.getAllMovie();
-        request.setAttribute("LIST_MOVIE", list);
+        ArrayList<MovieDTO> list;
 
+        // 2. Kiểm tra nếu có gõ tìm kiếm -> Gọi hàm search, ngược lại -> Load tất cả
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            list = dao.searchMovies(searchKeyword);
+            request.setAttribute("SEARCH_KEYWORD", searchKeyword); // Giữ lại từ khóa trên ô input
+        } else {
+            list = dao.getAllMovie();
+        }
+        request.setAttribute("LIST_MOVIE", list);
+        
         // 2. Kiểm tra Session để biết đã đăng nhập hay chưa
         HttpSession session = request.getSession();
         Object user = session.getAttribute("LOGIN_USER"); // Lấy user từ session
@@ -44,20 +52,20 @@ public class HomeController extends HttpServlet {
             // Chuyển sang trang index.jsp (Giao diện có nút Đăng nhập/Đăng ký)
             url = "index.jsp";
         }
-        
+
         // 3. Chuyển hướng đến trang đích đã chọn
         request.getRequestDispatcher(url).forward(request, response);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 

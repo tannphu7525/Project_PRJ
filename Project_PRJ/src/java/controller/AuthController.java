@@ -45,7 +45,6 @@ public class AuthController extends HttpServlet {
                 case "login":
                     doLogin(request, response);
                     break;
-
                 case "logout":
                     doLogOut(request, response);
                     break;
@@ -182,7 +181,7 @@ public class AuthController extends HttpServlet {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                // Gọi hàm gửi mail từ class EmailService mà bạn đã viết hôm qua
+                                // Gọi hàm gửi mail 
                                 util.EmailService.sendWelcomeEmail(toEmail, toName);
                             }
                         }).start();

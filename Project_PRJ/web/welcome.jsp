@@ -189,14 +189,24 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
                 <h3 class="fw-bold section-title mb-0">PHIM ĐANG CHIẾU</h3>
 
-
+                <form action="HomeController" method="GET" class="d-flex" style="max-width: 400px; width: 100%;">
+                    <input type="text" name="search" class="form-control search-input" 
+                           placeholder="Nhập tên phim, thể loại..." value="${SEARCH_KEYWORD}">
+                    <button type="submit" class="btn btn-primary search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
             </div>
 
-
+            <c:if test="${empty LIST_MOVIE}">
+                <div class="alert text-center mt-4" style="background-color: var(--bg-card); color: var(--text-muted); border: 1px dashed #334155;">
+                    <i class="fas fa-box-open fa-3x mb-3 mt-2"></i>
+                    <h5>Không tìm thấy bộ phim nào phù hợp với từ khóa "${SEARCH_KEYWORD}"</h5>
+                    <a href="HomeController" class="btn btn-outline-info mt-2 mb-2">Xem tất cả phim</a>
+                </div>
+            </c:if>
 
             <div class="row g-4">
-
-
                 <c:forEach items="${LIST_MOVIE}" var="movie">
                     <c:if test="${movie.status == true}">
                         <div class="col-lg-3 col-md-6">
