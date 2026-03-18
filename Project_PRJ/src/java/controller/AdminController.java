@@ -14,7 +14,6 @@ import model.ShowtimeDTO;
 import model.VoucherDAO;
 import model.VoucherDTO;
 
-@WebServlet(name = "AdminController", urlPatterns = {"/AdminController"})
 public class AdminController extends HttpServlet {
 
     private static final String ADMIN_MOVIE_PAGE = "admin_movie.jsp";

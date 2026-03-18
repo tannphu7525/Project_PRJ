@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.MovieDAO;
 import model.MovieDTO;
-import model.UserDTO;
 
-@WebServlet(name="HomeController", urlPatterns={"/HomeController"})
 public class HomeController extends HttpServlet {
    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

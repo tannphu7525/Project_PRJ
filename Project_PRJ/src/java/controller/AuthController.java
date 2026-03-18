@@ -23,7 +23,6 @@ import model.UserDTO;
  *
  * @author Cuong
  */
-@WebServlet(name = "AuthController", urlPatterns = {"/AuthController"})
 public class AuthController extends HttpServlet {
 
     private static final String ERROR_PAGE = "error.jsp";

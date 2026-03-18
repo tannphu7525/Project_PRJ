@@ -1,17 +1,7 @@
 package controller;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,10 +17,7 @@ import model.ShowtimeDAO;
 import model.ShowtimeDTO;
 import model.UserDTO;
 import model.VoucherDAO;
-import model.VoucherDTO;
-import util.EmailService;
 
-@WebServlet(name = "BookingController", urlPatterns = {"/BookingController"})
 public class BookingController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
