@@ -20,8 +20,6 @@ import model.UserDTO;
  * (403).
  * - Nếu đúng là ADMIN → cho đi qua.
  */
-@WebFilter(filterName = "AdminFilter", urlPatterns = { "/AdminController", "/admin_movie.jsp", "/admin_showtime.jsp",
-        "/admin_voucher.jsp" })
 public class AdminFilter implements Filter {
 
     @Override

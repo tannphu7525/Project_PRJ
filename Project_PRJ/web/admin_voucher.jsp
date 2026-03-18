@@ -85,9 +85,7 @@
                     <a href="MainController?action=adminVoucher&subAction=list" class="sidebar-link active">
                         <i class="fas fa-ticket-alt"></i> Quản lý Voucher
                     </a>
-                    <a href="#" class="sidebar-link text-secondary">
-                        <i class="fas fa-users"></i> Quản lý User (Sắp ra mắt)
-                    </a>
+                    
                 </div>
 
                 <div class="col-md-9 col-lg-10 main-content">

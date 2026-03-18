@@ -187,7 +187,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="index.jsp" class="text-muted small text-decoration-none"><i class="fas fa-arrow-left me-2"></i>Quay lại trang chủ</a>
+                <a href="HomeController" class="text-muted small text-decoration-none"><i class="fas fa-arrow-left me-2"></i>Quay lại trang chủ</a>
             </div>
         </div>
 

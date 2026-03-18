@@ -21,7 +21,6 @@ import model.UserDTO;
  * URL patterns: /index.jsp, /login.jsp, /AuthController (action=login,
  * register)
  */
-@WebFilter(filterName = "AuthenFilter", urlPatterns = { "/login.jsp", "/index.jsp" })
 public class AuthenFilter implements Filter {
 
     @Override

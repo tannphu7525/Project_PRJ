@@ -17,7 +17,6 @@ import javax.servlet.annotation.WebFilter;
  * response.setContentType("text/html;charset=UTF-8");
  * trong từng Controller.
  */
-@WebFilter(filterName = "EncodingFilter", urlPatterns = { "/*" })
 public class EncodingFilter implements Filter {
 
     private static final String ENCODING = "UTF-8";

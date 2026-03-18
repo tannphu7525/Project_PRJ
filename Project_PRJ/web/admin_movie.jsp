@@ -129,7 +129,7 @@
                     <i class="fas fa-film me-2"></i>PRJ CINEMA <span class="text-white fs-6 ms-2 fw-normal">| Hệ thống Quản trị</span>
                 </a>
                 <div class="d-flex align-items-center">
-                    
+
                     <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
                         <i class="fas fa-sign-out-alt me-1"></i> Thoát
                     </a>
@@ -177,7 +177,7 @@
                     <div class="admin-card">
                         <h4 class="card-title"><i class="fas fa-film me-2"></i>Thêm / Sửa Phim</h4>
 
-                        <form action="MainController" method="POST" class="row g-3">
+                        <form action="MainController" method="POST" class="row g-3" enctype="multipart/form-data">
                             <input type="hidden" name="action" value="adminMovie">
 
                             <input type="hidden" name="subAction" value="${not empty MOVIE_EDIT ? 'update' : 'add'}">
@@ -194,8 +194,24 @@
                             </div>
 
                             <div class="col-md-8">
-                                <label class="form-label">Link Ảnh (Poster URL):</label>
-                                <input type="text" name="posterUrl" class="form-control" required value="${MOVIE_EDIT.posterUrl}" placeholder="https://...">
+                                <label class="form-label">Ảnh Poster (Kéo thả hoặc Click):</label>
+
+                                <div id="drop-zone" class="text-center p-4 rounded" style="border: 2px dashed #334155; background-color: #0f172a; cursor: pointer; transition: all 0.3s ease;">
+                                    <input type="file" name="posterFile" id="posterFile" class="d-none" accept="image/*">
+
+                                    <div id="upload-content">
+                                        <i class="fas fa-cloud-upload-alt fs-1 text-info mb-2"></i>
+                                        <p class="mb-1 text-light">Kéo thả ảnh vào đây hoặc <b class="text-warning">Nhấn để chọn file</b></p>
+                                        <small class="text-muted">Hỗ trợ: JPG, PNG, GIF</small>
+                                    </div>
+
+                                    <div id="preview-container" class="mt-2 d-none">
+                                        <img id="image-preview" src="" alt="Preview" style="max-height: 180px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                                        <p class="text-danger mt-2 mb-0" style="font-size: 0.85rem;"><i class="fas fa-times me-1"></i>Nhấn vào ảnh để chọn lại</p>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="existingPoster" value="${MOVIE_EDIT.posterUrl}">
                             </div>
 
                             <div class="col-md-4">
@@ -272,5 +288,60 @@
                     </div> </div> </div> </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+                                                    const dropZone = document.getElementById('drop-zone');
+                                                    const fileInput = document.getElementById('posterFile');
+                                                    const uploadContent = document.getElementById('upload-content');
+                                                    const previewContainer = document.getElementById('preview-container');
+                                                    const imagePreview = document.getElementById('image-preview');
+
+                                                    // Mở cửa sổ chọn file khi click vào vùng Drop Zone
+                                                    dropZone.addEventListener('click', () => fileInput.click());
+
+                                                    // Hiệu ứng khi kéo file vào
+                                                    dropZone.addEventListener('dragover', (e) => {
+                                                        e.preventDefault();
+                                                        dropZone.style.borderColor = '#00d4ff';
+                                                        dropZone.style.backgroundColor = '#1e293b';
+                                                    });
+
+                                                    // Hiệu ứng khi kéo file ra
+                                                    dropZone.addEventListener('dragleave', () => {
+                                                        dropZone.style.borderColor = '#334155';
+                                                        dropZone.style.backgroundColor = '#0f172a';
+                                                    });
+
+                                                    // Khi thả file xuống
+                                                    dropZone.addEventListener('drop', (e) => {
+                                                        e.preventDefault();
+                                                        dropZone.style.borderColor = '#334155';
+                                                        dropZone.style.backgroundColor = '#0f172a';
+
+                                                        if (e.dataTransfer.files.length) {
+                                                            fileInput.files = e.dataTransfer.files;
+                                                            previewImage(fileInput.files[0]);
+                                                        }
+                                                    });
+
+                                                    // Khi chọn file bằng cách click
+                                                    fileInput.addEventListener('change', function () {
+                                                        if (this.files.length)
+                                                            previewImage(this.files[0]);
+                                                    });
+
+                                                    // Hàm hiển thị ảnh xem trước
+                                                    function previewImage(file) {
+                                                        if (file && file.type.startsWith('image/')) {
+                                                            const reader = new FileReader();
+                                                            reader.onload = (e) => {
+                                                                imagePreview.src = e.target.result;
+                                                                uploadContent.classList.add('d-none'); // Ẩn chữ đi
+                                                                previewContainer.classList.remove('d-none'); // Hiện ảnh lên
+                                                            };
+                                                            reader.readAsDataURL(file);
+                                                        }
+                                                    }
+        </script>
     </body>
 </html>
