@@ -157,17 +157,17 @@
                         <div><%= error%></div>
                     </div>
                     <% }%>
-                    
+
                     <%-- HIỂN THỊ THÔNG BÁO THÀNH CÔNG (TỪ TRANG ĐĂNG KÝ TRUYỀN VỀ) --%>
-                    <% 
+                    <%
                         String successMsg = (String) request.getAttribute("msg");
-                        if (successMsg != null && !successMsg.isEmpty()) { 
+                        if (successMsg != null && !successMsg.isEmpty()) {
                     %>
                     <div class="alert alert-success py-2 small d-flex align-items-center">
                         <i class="fas fa-check-circle me-2"></i>
-                        <div><%= successMsg %></div>
+                        <div><%= successMsg%></div>
                     </div>
-                    <% } %>
+                    <% }%>
 
                     <form action="MainController" method="POST">
                         <input type="hidden" name="action" value="login"/>
@@ -176,8 +176,15 @@
                             <input type="text" name="username" class="form-control" value="<%= savedUsername%>" required placeholder="Nhập tên đăng nhập">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small">Mật khẩu</label>
-                            <input type="password" name="password" class="form-control" required placeholder="Nhập mật khẩu">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" name="password" id="myPassword" class="form-control" required>
+
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="showPass" onclick="togglePass()">
+                                <label class="form-check-label text-light" for="showPass">
+                                    Hiển thị mật khẩu
+                                </label>
+                            </div>
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" name="remember" class="form-check-input" id="rem" value="ON" <%= isRemembered ? "checked" : ""%>>
@@ -197,5 +204,16 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+                                    function togglePass() {
+                                        var x = document.getElementById("myPassword");
+                                        // Nếu đang là password thì đổi thành text, và ngược lại
+                                        if (x.type === "password") {
+                                            x.type = "text";
+                                        } else {
+                                            x.type = "password";
+                                        }
+                                    }
+        </script>
     </body>
 </html>

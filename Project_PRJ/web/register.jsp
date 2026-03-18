@@ -159,11 +159,21 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label small">Mật khẩu</label>
-                            <input type="password" name="password" class="form-control form-control-sm" required>
+                            <input type="password" name="password" id="regPassword" class="form-control form-control-sm" required>
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label small">Xác nhận mật khẩu</label>
-                            <input type="password" name="confirmPassword" class="form-control form-control-sm" required>
+                            <input type="password" name="confirmPassword" id="regConfirmPassword" class="form-control form-control-sm" required>
+                        </div>
+
+                        <div class="col-12 mb-3 mt-n2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="showRegPass" onclick="toggleRegPass()">
+                                <label class="form-check-label small text-muted" for="showRegPass">
+                                    Hiển thị mật khẩu
+                                </label>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label small">Email</label>
@@ -192,5 +202,33 @@
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+                                    function togglePass() {
+                                        var x = document.getElementById("myPassword");
+                                        // Nếu đang là password thì đổi thành text, và ngược lại
+                                        if (x.type === "password") {
+                                            x.type = "text";
+                                        } else {
+                                            x.type = "password";
+                                        }
+                                    }
+        </script>
+        <script>
+            function toggleRegPass() {
+                // Lấy 2 ô nhập mật khẩu ra
+                var pass1 = document.getElementById("regPassword");
+                var pass2 = document.getElementById("regConfirmPassword");
+
+                // Nếu ô đầu tiên đang là password thì đổi cả 2 thành text (hiện chữ)
+                if (pass1.type === "password") {
+                    pass1.type = "text";
+                    pass2.type = "text";
+                } else {
+                    // Ngược lại thì đổi cả 2 về dấu chấm
+                    pass1.type = "password";
+                    pass2.type = "password";
+                }
+            }
+        </script>
     </body>
 </html>
