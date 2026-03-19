@@ -94,7 +94,7 @@ public class BookingController extends HttpServlet {
                 String appliedVoucherCode = request.getParameter("appliedVoucherCode");
 
                 HttpSession session = request.getSession();
-                UserDTO loginUser = (UserDTO) session.getAttribute("LOGIN_USER");
+                model.UserDTO loginUser = (model.UserDTO) session.getAttribute("LOGIN_USER");
                 if (loginUser == null) {
                     response.sendRedirect("login.jsp");
                     return;
@@ -106,35 +106,34 @@ public class BookingController extends HttpServlet {
                 session.setAttribute("TEMP_TOTAL", totalAmount);
                 session.setAttribute("TEMP_VOUCHER", appliedVoucherCode);
 
-                // TẠO LINK VIETQR
-                String bankId = "stb"; // Thay bằng tên viết tắt ngân hàng của bạn (vcb, tpb, bidv...)
-                String accountNo = "0344215596"; // Thay bằng STK thật của bạn
-                String accountName = "THAI TAN PHU"; // Tên chủ tài khoản không dấu
-
-                // Tạo một mã đơn hàng ngẫu nhiên làm nội dung chuyển khoản
+                // Tạo mã đơn hàng duy nhất để tự động điền vào Nội dung chuyển khoản
                 String orderCode = "VEPHIM" + System.currentTimeMillis();
 
-                // Ép kiểu số tiền bỏ phần thập phân
-                long amount = (long) totalAmount;
+                // MẸO DEMO: Ép số tiền trong mã QR thành 2.000đ để quét thật không bị xót ví
+                long amountForQR = 2000;
+                long displayAmount = (long) totalAmount; // Số tiền thật để hiện trên Web
 
-                // Build link QR (Nhớ encode nội dung để không bị lỗi dấu cách)
+                // TẠO LINK ẢNH VIETQR 
+                String bankId = "stb"; // Sacombank
+                String accountNo = "0344215596"; // STK thật của bạn
+                String accountName = "THAI TAN PHU"; // Tên chủ thẻ (Không dấu)
+
                 String qrUrl = "https://img.vietqr.io/image/" + bankId + "-" + accountNo + "-compact2.png"
-                        + "?amount=" + amount
+                        + "?amount=" + amountForQR
                         + "&addInfo=" + java.net.URLEncoder.encode(orderCode, "UTF-8")
                         + "&accountName=" + java.net.URLEncoder.encode(accountName, "UTF-8");
 
-                // Gửi dữ liệu sang trang jsp
                 request.setAttribute("QR_URL", qrUrl);
-                request.setAttribute("TOTAL_AMOUNT_STR", String.format("%,d", amount));
+                request.setAttribute("TOTAL_AMOUNT_STR", String.format("%,d", displayAmount));
                 request.setAttribute("ORDER_INFO", orderCode);
 
-                // Chuyển hướng sang trang quét mã
                 request.getRequestDispatcher("payment_qr.jsp").forward(request, response);
-            } else if (action.equals("confirm_qr")) {
-                HttpSession session = request.getSession();
-                UserDTO loginUser = (UserDTO) session.getAttribute("LOGIN_USER");
 
-                // Lấy dữ liệu ra
+            } else if (action.equals("confirm_qr")) {
+                // ... (ĐOẠN CODE LƯU DATABASE VÀ GỬI EMAIL BÊN DƯỚI GIỮ NGUYÊN NHƯ BẢN TRƯỚC) ...
+                HttpSession session = request.getSession();
+                model.UserDTO loginUser = (model.UserDTO) session.getAttribute("LOGIN_USER");
+
                 String selectedSeatsRaw = (String) session.getAttribute("TEMP_SEATS");
                 int showtimeID = Integer.parseInt(String.valueOf(session.getAttribute("TEMP_SHOWTIME")));
                 double totalAmount = Double.parseDouble(String.valueOf(session.getAttribute("TEMP_TOTAL")));
@@ -142,30 +141,28 @@ public class BookingController extends HttpServlet {
 
                 if (selectedSeatsRaw != null) {
                     String[] seatIDs = selectedSeatsRaw.split(",");
-                    BookingDAO bookingDAO = new BookingDAO();
+                    model.BookingDAO bookingDAO = new model.BookingDAO();
 
-                    // Lưu Database
                     boolean isSuccess = bookingDAO.processCheckout(loginUser.getUserID(), showtimeID, seatIDs, totalAmount);
 
                     if (isSuccess) {
                         if (appliedVoucherCode != null && !appliedVoucherCode.trim().isEmpty()) {
-                            new VoucherDAO().decreaseVoucherQuantity(appliedVoucherCode);
+                            new model.VoucherDAO().decreaseVoucherQuantity(appliedVoucherCode);
                         }
-
-                        // Gửi Email
                         final String userEmail = loginUser.getEmail();
                         final String userName = loginUser.getFullName();
                         final double finalAmount = totalAmount;
                         final String finalSeats = selectedSeatsRaw;
 
                         new Thread(() -> {
-                            util.EmailService.sendTicketEmail(userEmail, userName, "Phim Bom Tấn", "Hôm nay", "Suất chiếu của bạn", finalSeats, finalAmount);
+                            try {
+                                util.EmailService.sendTicketEmail(userEmail, userName, "Phim PRJ Cinema", "Hôm nay", "Phòng chiếu", finalSeats, finalAmount);
+                            } catch (Exception e) {
+                            }
                         }).start();
 
-                        session.setAttribute("MESSAGE", "Xác nhận chuyển khoản thành công! Vé E-Ticket đã được gửi qua Email.");
+                        session.setAttribute("MESSAGE", "Thanh toán thành công! Vé E-Ticket đã được gửi qua Email.");
                     }
-
-                    // Xóa Session
                     session.removeAttribute("TEMP_SEATS");
                     session.removeAttribute("TEMP_SHOWTIME");
                     session.removeAttribute("TEMP_TOTAL");
