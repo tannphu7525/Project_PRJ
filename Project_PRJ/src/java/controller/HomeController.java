@@ -7,14 +7,12 @@ package controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.MovieDAO;
 import model.MovieDTO;
-import model.ReviewDAO;
 import model.UserDTO;
 
 public class HomeController extends HttpServlet {

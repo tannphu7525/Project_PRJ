@@ -128,5 +128,23 @@
         <servlet-name>VoucherController</servlet-name>
         <url-pattern>/VoucherController</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>ReviewController</servlet-name>
+        <servlet-class>controller.ReviewController</servlet-class> 
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReviewController</servlet-name>
+        <url-pattern>/ReviewController</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>ForgotPasswordController</servlet-name>
+        <servlet-class>controller.ForgotPasswordController</servlet-class> 
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ForgotPasswordController</servlet-name>
+        <url-pattern>/ForgotPasswordController</url-pattern>
+    </servlet-mapping>
 
 </web-app>
