@@ -41,7 +41,7 @@ public class ForgotPasswordController extends HttpServlet {
 
                 // Gửi mail
                 new Thread(() -> {
-                    EmailService.sendOTPEmail(email, otp);
+                    EmailService.sendOTPEmailForgetPass(email, otp);
                 }).start();
 
                 request.setAttribute("MESSAGE", "Mã OTP đã được gửi đến email của bạn.");

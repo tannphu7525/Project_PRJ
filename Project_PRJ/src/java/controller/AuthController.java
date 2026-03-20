@@ -5,6 +5,7 @@
 package controller;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -16,6 +17,7 @@ import model.MovieDAO;
 import model.MovieDTO;
 import model.UserDAO;
 import model.UserDTO;
+import util.EmailService;
 
 /**
  *
@@ -49,7 +51,9 @@ public class AuthController extends HttpServlet {
                 case "register":
                     doRegister(request, response);
                     break;
-
+                case "verifyRegisterOTP":
+                    doVerifyRegisterOTP(request, response);
+                    break;
                 default:
                     request.setAttribute("error", "Hành động không hợp lệ: " + action);
                     doLogin(request, response);
@@ -154,64 +158,118 @@ public class AuthController extends HttpServlet {
             if (!password.equals(confirmpassword)) {
                 msg = "Mật khẩu không trùng khớp!";
                 request.setAttribute("msg", msg);
+                request.getRequestDispatcher(url).forward(request, response);
+                return;
+            }
+
+            UserDAO dao = new UserDAO();
+            if (dao.checkDuplicateUsername(username)) {
+                msg = "Username này đã được sử dụng. Vui lòng chọn Username khác";
+                request.setAttribute("msg", msg);
+                request.getRequestDispatcher(url).forward(request, response);
+            } else if (dao.checkEmailExist(email)) {
+                msg = "Email này đã được sử dụng để đăng ký tài khoản khác!";
+                request.setAttribute("msg", msg);
+                request.getRequestDispatcher(url).forward(request, response);
             } else {
-                UserDAO dao = new UserDAO();
-                if (dao.checkDuplicateUsername(username)) {
-                    msg = "Username này đã được sử dụng. Vui lòng chọn Username khác";
-                    request.setAttribute("msg", msg);
-                } else if (dao.checkEmailExist(email)) {
-                    msg = "Email này đã được sử dụng để đăng ký tài khoản khác!";
-                    request.setAttribute("msg", msg);
-                } else {
-                    UserDTO newUser = new UserDTO(0, username, password, fullName, "CUSTOMER", true, email);
-                    boolean isSuccess = dao.registerUser(newUser);
+                // 1. Nếu thông tin hợp lệ, tạo đối tượng User chờ duyệt
+                UserDTO pendingUser = new UserDTO(0, username, password, fullName, "CUSTOMER", true, email);
 
-                    if (isSuccess) {
-                        // 1. Luồng chính: Báo thành công và chuyển ngay lập tức sang trang Login
-                        msg = "Đăng ký thành công! Vui lòng kiểm tra hộp thư Email của bạn.";
-                        request.setAttribute("msg", msg); // Trang login dùng biến "error" để hiển thị msg
-                        url = SUCCESS_PAGE; // (login.jsp)
+                // 2. Tạo mã OTP 6 số
+                SecureRandom random = new SecureRandom();
+                int otpCode = 100000 + random.nextInt(900000); // Đảm bảo luôn ra 6 số
 
-                        // 2. Luồng phụ (Async Thread): Gọi EmailService chạy ngầm
-                        final String toEmail = email;
-                        final String toName = fullName;
+                // 3. Lưu vào Session (Chờ xác thực mới lưu DB)
+                HttpSession session = request.getSession();
+                session.setAttribute("PENDING_USER", pendingUser);
+                session.setAttribute("REGISTER_OTP", otpCode);
+                session.setAttribute("REGISTER_OTP_EXPIRY", System.currentTimeMillis() + (3 * 60 * 1000)); // Hạn 3 phút
 
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Gọi hàm gửi mail 
-                                util.EmailService.sendWelcomeEmail(toEmail, toName);
-                            }
-                        }).start();
+                // 4. Gửi mail OTP chạy ngầm (Async Thread)
+                new Thread(() -> {
+                    EmailService.sendOTPEmailRegister(email, otpCode);
+                }).start();
 
-                    } else {
-                        msg = "Có lỗi xảy ra trong quá trình ghi dữ liệu. Vui lòng thử lại.";
-                        request.setAttribute("msg", msg);
-                    }
-                }
+                // 5. Chuyển hướng tới trang nhập OTP
+                request.setAttribute("MESSAGE", "Mã OTP đã được gửi đến email " + email + " của bạn.");
+                request.getRequestDispatcher("verify_register.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+            request.setAttribute("msg", "Có lỗi xảy ra, vui lòng thử lại sau.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+        }
+    }
+
+    //Kiểm tra OTP đăng kí 
+    protected void doVerifyRegisterOTP(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String inputOTP = request.getParameter("otp");
+        HttpSession session = request.getSession();
+
+        UserDTO pendingUser = (UserDTO) session.getAttribute("PENDING_USER");
+        Object otpObj = session.getAttribute("REGISTER_OTP");
+        Long expiryTime = (Long) session.getAttribute("REGISTER_OTP_EXPIRY");
+
+        if (pendingUser == null || otpObj == null || expiryTime == null) {
+            request.setAttribute("msg", "Phiên giao dịch đã hết hạn hoặc không hợp lệ. Vui lòng đăng ký lại.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
         }
 
-    }
+        if (System.currentTimeMillis() > expiryTime) {
+            request.setAttribute("ERROR", "Mã OTP đã hết hạn (quá 3 phút). Vui lòng đăng ký lại!");
+            request.getRequestDispatcher("verify_register.jsp").forward(request, response);
+            return;
+        }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        String sessionOTP = String.valueOf(otpObj);
+        if (!sessionOTP.equals(inputOTP)) {
+            request.setAttribute("ERROR", "Mã OTP không chính xác!");
+            request.getRequestDispatcher("verify_register.jsp").forward(request, response);
+            return;
+        }
+
+        // OTP Hợp lệ -> Tiến hành lưu User vào Database
+        UserDAO dao = new UserDAO();
+        boolean isSuccess = dao.registerUser(pendingUser);
+
+        if (isSuccess) {
+            // Xóa rác trong session
+            session.removeAttribute("PENDING_USER");
+            session.removeAttribute("REGISTER_OTP");
+            session.removeAttribute("REGISTER_OTP_EXPIRY");
+
+            // Gửi Welcome Email chạy ngầm
+            final String toEmail = pendingUser.getEmail();
+            final String toName = pendingUser.getFullName();
+            new Thread(() -> {
+                EmailService.sendWelcomeEmail(toEmail, toName);
+            }).start();
+
+            // Chuyển sang trang Login
+            request.setAttribute("msg", "Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        } else {
+            request.setAttribute("ERROR", "Có lỗi xảy ra trong quá trình ghi dữ liệu. Vui lòng thử lại.");
+            request.getRequestDispatcher("verify_register.jsp").forward(request, response);
+        }
+    }
+    
+@Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-    public String getServletInfo() {
+public String getServletInfo() {
         return "Short description";
     }
 }

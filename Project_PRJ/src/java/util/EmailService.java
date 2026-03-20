@@ -106,7 +106,49 @@ public class EmailService {
     }
     
     // Gửi mail mã OTP Quên mật khẩu
-    public static boolean sendOTPEmail(String toEmail, int otpCode) {
+    public static boolean sendOTPEmailForgetPass(String toEmail, int otpCode) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(FROM_EMAIL, APP_PASSWORD);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(FROM_EMAIL, "Hệ Thống PRJ Cinema", "UTF-8"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject("Mã xác thực (OTP)", "UTF-8");
+
+            String htmlContent = "<html><body>"
+                    + "<div style='font-family: Arial, sans-serif; padding: 20px; color: #333; border: 1px solid #ddd; border-radius: 10px; max-width: 500px; margin: 0 auto;'>"
+                    + "<h2 style='color: #E50914; text-align: center;'>Yêu cầu đặt lại mật khẩu</h2>"
+                    + "<p>Xin chào,</p>"
+                    + "<p>Bạn vừa yêu cầu lấy lại mật khẩu tại PRJ Cinema. Dưới đây là mã xác thực (OTP) của bạn. Mã này chỉ có hiệu lực trong vòng <b>3 phút</b>.</p>"
+                    + "<div style='text-align: center; margin: 20px 0;'>"
+                    + "<span style='font-size: 24px; font-weight: bold; background-color: #f4f4f4; padding: 10px 20px; border-radius: 5px; color: #E50914; letter-spacing: 5px;'>" + otpCode + "</span>"
+                    + "</div>"
+                    + "<p style='color: #777; font-size: 13px;'>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này để bảo vệ tài khoản.</p>"
+                    + "</div>"
+                    + "</body></html>";
+
+            message.setContent(htmlContent, "text/html; charset=UTF-8");
+            Transport.send(message);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    // Gửi mail mã OTP Đăng kí
+    public static boolean sendOTPEmailRegister(String toEmail, int otpCode) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");

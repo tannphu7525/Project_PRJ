@@ -40,6 +40,9 @@ public class MainController extends HttpServlet {
             case "register":
                 url = REGISTER_CONTROLLER;
                 break;
+            case "verifyRegisterOTP":
+                url = REGISTER_CONTROLLER;
+                break;
             case "adminMovie":
                 url = ADMIN_MOVIE_CONTROLLER;
                 break;
