@@ -7,8 +7,8 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="Project_PRJ" default="default" basedir=".">
-    <description>Builds, tests, and runs the project Project_PRJ.</description>
+<project name="PRJ_Cinema" default="default" basedir=".">
+    <description>Builds, tests, and runs the project PRJ_Cinema.</description>
     <import file="nbproject/build-impl.xml"/>
     <!--
 
