@@ -47,12 +47,16 @@ public class HomeController extends HttpServlet {
                     }
                     request.setAttribute("CAN_REVIEW", canReview);
                     request.getRequestDispatcher("movie_detail.jsp").forward(request, response);
-                    return; 
+                } else {
+                    // Phim không tồn tại -> về trang chủ
+                    response.sendRedirect(request.getContextPath() + "/HomeController");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                response.sendRedirect(request.getContextPath() + "/HomeController");
             }
-        }else if ("showtimes".equals(action)) {
+            return;
+        } else if ("showtimes".equals(action)) {
             ShowtimeDAO showtimes = new ShowtimeDAO();
             request.setAttribute("LIST_SHOWTIME", showtimes.getAllShowtimes());
             request.getRequestDispatcher("showtimes.jsp").forward(request, response);

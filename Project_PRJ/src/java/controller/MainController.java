@@ -48,6 +48,9 @@ public class MainController extends HttpServlet {
             case "verifyRegisterOTP":
                 url = REGISTER_CONTROLLER;
                 break;
+            case "resendOTP":
+                url = REGISTER_CONTROLLER;
+                break;
             case "adminUser":
                 url = ADMIN_USER_CONTROLLER;
                 break;

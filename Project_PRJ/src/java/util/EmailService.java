@@ -170,9 +170,9 @@ public class EmailService {
 
             String htmlContent = "<html><body>"
                     + "<div style='font-family: Arial, sans-serif; padding: 20px; color: #333; border: 1px solid #ddd; border-radius: 10px; max-width: 500px; margin: 0 auto;'>"
-                    + "<h2 style='color: #E50914; text-align: center;'>Yêu cầu đặt lại mật khẩu</h2>"
+                    + "<h2 style='color: #E50914; text-align: center;'>Xác thực đăng ký tài khoản</h2>"
                     + "<p>Xin chào,</p>"
-                    + "<p>Bạn vừa yêu cầu lấy lại mật khẩu tại PRJ Cinema. Dưới đây là mã xác thực (OTP) của bạn. Mã này chỉ có hiệu lực trong vòng <b>3 phút</b>.</p>"
+                    + "<p>Bạn vừa đăng ký tài khoản tại PRJ Cinema. Dưới đây là mã xác thực (OTP) của bạn. Mã này chỉ có hiệu lực trong vòng <b>3 phút</b>.</p>"
                     + "<div style='text-align: center; margin: 20px 0;'>"
                     + "<span style='font-size: 24px; font-weight: bold; background-color: #f4f4f4; padding: 10px 20px; border-radius: 5px; color: #E50914; letter-spacing: 5px;'>" + otpCode + "</span>"
                     + "</div>"

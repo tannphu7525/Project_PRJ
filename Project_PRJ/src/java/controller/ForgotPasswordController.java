@@ -31,7 +31,7 @@ public class ForgotPasswordController extends HttpServlet {
 
                 // Gen mã OTP 6 số ngẫu nhiên
                 SecureRandom random = new SecureRandom();
-                int otp = random.nextInt(999999);
+                int otp = 100000 + random.nextInt(900000); // Đảm bảo luôn ra 6 số
                 
                 // Lưu vào Session kèm thời gian hết hạn (3 phút = 3 * 60 * 1000 ms)
                 long expiryTime = System.currentTimeMillis() + (3 * 60 * 1000);

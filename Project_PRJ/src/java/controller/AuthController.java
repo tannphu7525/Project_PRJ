@@ -54,6 +54,9 @@ public class AuthController extends HttpServlet {
                 case "verifyRegisterOTP":
                     doVerifyRegisterOTP(request, response);
                     break;
+                case "resendOTP":
+                    doResendOTP(request, response);
+                    break;
                 default:
                     request.setAttribute("error", "Hành động không hợp lệ: " + action);
                     doLogin(request, response);
@@ -255,21 +258,49 @@ public class AuthController extends HttpServlet {
             request.getRequestDispatcher("verify_register.jsp").forward(request, response);
         }
     }
-    
-@Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
+
+    protected void doResendOTP(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        model.UserDTO pendingUser = (model.UserDTO) session.getAttribute("PENDING_USER");
+
+        if (pendingUser != null) {
+            // 1. Tạo mã OTP 6 số mới
+            java.security.SecureRandom random = new java.security.SecureRandom();
+            int newOtpCode = 100000 + random.nextInt(900000);
+
+            // 2. Cập nhật lại Session
+            session.setAttribute("REGISTER_OTP", newOtpCode);
+            session.setAttribute("REGISTER_OTP_EXPIRY", System.currentTimeMillis() + (3 * 60 * 1000));
+
+            // 3. Gửi lại Email (Async)
+            new Thread(() -> {
+                util.EmailService.sendOTPEmailRegister(pendingUser.getEmail(), newOtpCode);
+            }).start();
+
+            request.setAttribute("MESSAGE", "Mã OTP mới đã được gửi lại vào email của bạn.");
+        } else {
+            request.setAttribute("ERROR", "Không tìm thấy thông tin đăng ký. Vui lòng đăng ký lại.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+        request.getRequestDispatcher("verify_register.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-public String getServletInfo() {
+    public String getServletInfo() {
         return "Short description";
     }
 }

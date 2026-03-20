@@ -156,7 +156,15 @@ public class AdminController extends HttpServlet {
                 request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
 
             } else if (subAction.equals("delete")) {
-                int movieID = Integer.parseInt(request.getParameter("movieID"));
+                int movieID = 0;
+                try {
+                    movieID = Integer.parseInt(request.getParameter("movieID"));
+                } catch (NumberFormatException e) {
+                    request.setAttribute("msg", "ID phim không hợp lệ!");
+                    request.setAttribute("LIST_MOVIE", dao.getAllMovie());
+                    request.getRequestDispatcher(ADMIN_MOVIE_PAGE).forward(request, response);
+                    return;
+                }
                 boolean checkDelete = dao.deleteMovie(movieID);
                 if (checkDelete) {
                     request.setAttribute("msg", "Đã ngừng chiếu bộ phim!");
@@ -226,10 +234,12 @@ public class AdminController extends HttpServlet {
         try {
             if (subAction == null || subAction.isEmpty() || subAction.equals("list")) {
             } else if (subAction.equals("edit")) {
-                int id = Integer.parseInt(request.getParameter("showtimeID"));
+                int id = 0;
+                try { id = Integer.parseInt(request.getParameter("showtimeID")); } catch (NumberFormatException ignored) {}
                 request.setAttribute("SHOWTIME_EDIT", showTimeDAO.getShowtimeByID(id));
             } else if (subAction.equals("delete")) {
-                int id = Integer.parseInt(request.getParameter("showtimeID"));
+                int id = 0;
+                try { id = Integer.parseInt(request.getParameter("showtimeID")); } catch (NumberFormatException ignored) {}
                 boolean check = showTimeDAO.deleteShowtime(id);
                 request.setAttribute("msg", check ? "Đã hủy lịch chiếu thành công!" : "Lỗi: Không thể xóa do đã có người đặt vé!");
             } else if (subAction.equals("add") || subAction.equals("update")) {
