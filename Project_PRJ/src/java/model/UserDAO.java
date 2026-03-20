@@ -3,6 +3,7 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import org.mindrot.jbcrypt.BCrypt;
 import util.DBUtils;
 
@@ -121,5 +122,50 @@ public class UserDAO {
             e.printStackTrace();
         }
         return check;
+    }
+    
+    //ADMIN QUẢN LÝ USER
+    // Lấy toàn bộ danh sách User
+    public ArrayList<UserDTO> getAllUsers() {
+        ArrayList<UserDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM Users ORDER BY role ASC, userID DESC"; 
+        try (Connection conn = util.DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(new UserDTO(
+                    rs.getInt("userID"),
+                    rs.getString("username"),
+                    "", 
+                    rs.getString("fullName"),
+                    rs.getString("role"),
+                    rs.getBoolean("status"),
+                    rs.getString("email")
+                ));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // Khóa / Mở khóa tài khoản
+    public boolean updateUserStatus(int userID, boolean newStatus) {
+        String sql = "UPDATE Users SET status = ? WHERE userID = ?";
+        try (Connection conn = util.DBUtils.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, newStatus);
+            ps.setInt(2, userID);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    // Phân quyền (ADMIN / CUSTOMER)
+    public boolean updateUserRole(int userID, String newRole) {
+        String sql = "UPDATE Users SET role = ? WHERE userID = ?";
+        try (Connection conn = util.DBUtils.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newRole.toUpperCase());
+            ps.setInt(2, userID);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 }

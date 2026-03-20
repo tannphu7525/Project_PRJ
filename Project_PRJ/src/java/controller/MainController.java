@@ -15,6 +15,11 @@ public class MainController extends HttpServlet {
     private static final String ADMIN_MOVIE_CONTROLLER = "AdminController";
     private static final String ADMIN_SHOWTIME_CONTROLLER = "AdminController";
     private static final String ADMIN_VOUCHER_CONTROLLER = "AdminController";
+    private static final String ADMIN_CINEMAS_CONTROLLER = "AdminController";
+    private static final String ADMIN_ROOM_CONTROLLER = "AdminController";
+    private static final String ADMIN_USER_CONTROLLER = "AdminController";
+    private static final String ADMIN_BOOKING_CONTROLLER = "AdminController";
+    private static final String ADMIN_REVIEW_CONTROLLER = "AdminController";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -43,15 +48,30 @@ public class MainController extends HttpServlet {
             case "verifyRegisterOTP":
                 url = REGISTER_CONTROLLER;
                 break;
+            case "adminUser":
+                url = ADMIN_USER_CONTROLLER;
+                break;
             case "adminMovie":
                 url = ADMIN_MOVIE_CONTROLLER;
                 break;
             case "adminShowtime":
                 url = ADMIN_SHOWTIME_CONTROLLER;
                 break;
-             case "adminVoucher":
+            case "adminVoucher":
                 url = ADMIN_VOUCHER_CONTROLLER;
-                break;               
+                break;
+            case "adminCinema":
+                url = ADMIN_CINEMAS_CONTROLLER;
+                break;
+            case "adminRoom":
+                url = ADMIN_ROOM_CONTROLLER;
+                break;
+            case "adminBooking":
+                url = ADMIN_BOOKING_CONTROLLER;
+                break;
+            case "adminReview":
+                url = ADMIN_REVIEW_CONTROLLER;
+                break;
             case "checkvoucher":
                 url = "VoucherController";
                 break;

@@ -13,7 +13,11 @@ public class OrderHistoryDTO {
     private String roomName;
     private Date showDate;
     private Time startTime;
-    private String seats; // Chứa chuỗi ghế gộp lại (VD: "A1, A2, B3")
+    private String seats; 
+    
+    //TRƯỜNG CHO ADMIN
+    private String userName;
+    private String orderStatus;
 
     public OrderHistoryDTO() {
     }
@@ -28,6 +32,20 @@ public class OrderHistoryDTO {
         this.showDate = showDate;
         this.startTime = startTime;
         this.seats = seats;
+    }
+
+    public OrderHistoryDTO(int orderID, Timestamp orderDate, double totalAmount, String movieTitle, String cinemaName, String roomName, Date showDate, Time startTime, String seats, String userName, String orderStatus) {
+        this.orderID = orderID;
+        this.orderDate = orderDate;
+        this.totalAmount = totalAmount;
+        this.movieTitle = movieTitle;
+        this.cinemaName = cinemaName;
+        this.roomName = roomName;
+        this.showDate = showDate;
+        this.startTime = startTime;
+        this.seats = seats;
+        this.userName = userName;
+        this.orderStatus = orderStatus;
     }
 
     public int getOrderID() {
@@ -102,5 +120,21 @@ public class OrderHistoryDTO {
         this.seats = seats;
     }
 
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+    
+    
 }

@@ -139,24 +139,7 @@
 
         <div class="container-fluid">
             <div class="row">
-
-                <div class="col-md-3 col-lg-2 p-0 sidebar d-none d-md-block position-sticky overflow-auto" style="top: 70px; height: calc(100vh - 70px);">
-                    <a href="HomeController" class="sidebar-link">
-                        <i class="fas fa-home"></i> Trang chủ
-                    </a>
-
-                    <a href="MainController?action=adminMovie&subAction=list" class="sidebar-link active">
-                        <i class="fas fa-video"></i> Quản lý Phim
-                    </a>
-
-                    <a href="MainController?action=adminShowtime&subAction=list" class="sidebar-link">
-                        <i class="fas fa-calendar-alt"></i> Quản lý Lịch chiếu
-                    </a>
-
-                    <a href="MainController?action=adminVoucher" class="sidebar-link">
-                        <i class="fas fa-ticket-alt"></i> Quản lý Voucher
-                    </a>
-                </div>
+                <jsp:include page="admin_sidebar.jsp" />
 
                 <div class="col-md-9 col-lg-10 main-content">
 

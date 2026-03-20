@@ -147,8 +147,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item"><a class="nav-link active" href="HomeController">Lịch Chiếu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Khuyến Mãi</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="HomeController?action=showtimes">Lịch Chiếu</a></li>
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">

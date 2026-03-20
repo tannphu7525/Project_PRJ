@@ -48,9 +48,9 @@
                 border-right: 1px solid var(--border-color);
                 padding-top: 20px;
                 position: sticky;
-                top: 70px; 
-                height: calc(100vh - 70px); 
-                overflow-y: auto; 
+                top: 70px;
+                height: calc(100vh - 70px);
+                overflow-y: auto;
             }
             .sidebar-link {
                 color: var(--text-muted);
@@ -67,11 +67,18 @@
                 color: var(--accent-blue);
                 border-left: 5px solid var(--accent-blue);
             }
-            .sidebar-link i { width: 30px; }
-            
+            .sidebar-link i {
+                width: 30px;
+            }
+
             /* Tùy chỉnh thanh cuộn Sidebar */
-            .sidebar::-webkit-scrollbar { width: 6px; }
-            .sidebar::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 10px; }
+            .sidebar::-webkit-scrollbar {
+                width: 6px;
+            }
+            .sidebar::-webkit-scrollbar-thumb {
+                background-color: #334155;
+                border-radius: 10px;
+            }
 
             /* MAIN CONTENT */
             .main-content {
@@ -97,12 +104,34 @@
             }
 
             /* TABLES & FORMS */
-            .table-dark { background-color: transparent; }
-            .table-dark th { background-color: #111827; color: var(--accent-blue); border-color: var(--border-color); }
-            .table-dark td { background-color: var(--bg-card); border-color: var(--border-color); vertical-align: middle; }
-            .form-label { font-weight: 500; color: #cbd5e1; }
-            .form-control, .form-select { background-color: #0f172a; border: 1px solid var(--border-color); color: white; }
-            .form-control:focus, .form-select:focus { border-color: var(--accent-blue); color: white; background-color: #0f172a; box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25); }
+            .table-dark {
+                background-color: transparent;
+            }
+            .table-dark th {
+                background-color: #111827;
+                color: var(--accent-blue);
+                border-color: var(--border-color);
+            }
+            .table-dark td {
+                background-color: var(--bg-card);
+                border-color: var(--border-color);
+                vertical-align: middle;
+            }
+            .form-label {
+                font-weight: 500;
+                color: #cbd5e1;
+            }
+            .form-control, .form-select {
+                background-color: #0f172a;
+                border: 1px solid var(--border-color);
+                color: white;
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: var(--accent-blue);
+                color: white;
+                background-color: #0f172a;
+                box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+            }
         </style>
     </head>
     <body>
@@ -113,7 +142,7 @@
                     <i class="fas fa-film me-2"></i>PRJ CINEMA <span class="text-white fs-6 ms-2 fw-normal">| Hệ thống Quản trị</span>
                 </a>
                 <div class="d-flex align-items-center">
-                    
+
                     <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
                         <i class="fas fa-sign-out-alt me-1"></i> Thoát
                     </a>
@@ -124,23 +153,7 @@
         <div class="container-fluid">
             <div class="row">
 
-                <div class="col-md-3 col-lg-2 p-0 sidebar d-none d-md-block">
-                    <a href="HomeController" class="sidebar-link">
-                        <i class="fas fa-home"></i> Trang chủ
-                    </a>
-
-                    <a href="MainController?action=adminMovie&subAction=list" class="sidebar-link">
-                        <i class="fas fa-video"></i> Quản lý Phim
-                    </a>
-
-                    <a href="MainController?action=adminShowtime&subAction=list" class="sidebar-link active">
-                        <i class="fas fa-calendar-alt"></i> Quản lý Lịch chiếu
-                    </a>
-
-                    <a href="MainController?action=adminVoucher" class="sidebar-link">
-                        <i class="fas fa-ticket-alt"></i> Quản lý Voucher
-                    </a>
-                </div>
+                <jsp:include page="admin_sidebar.jsp" />
 
                 <div class="col-md-9 col-lg-10 main-content">
 
@@ -163,13 +176,14 @@
 
                         <form action="MainController" method="POST" class="row g-3">
                             <input type="hidden" name="action" value="adminShowtime">
-                            <input type="hidden" name="subAction" value="add">
+                            <input type="hidden" name="subAction" value="${not empty SHOWTIME_EDIT ? 'update' : 'add'}">
+                            <input type="hidden" name="showtimeID" value="${not empty SHOWTIME_EDIT ? SHOWTIME_EDIT.showtimeID : '0'}">
 
                             <div class="col-md-6">
                                 <label class="form-label">Chọn Phim:</label>
                                 <select name="movieID" class="form-select" required>
                                     <c:forEach var="movie" items="${MOVIE_LIST}">
-                                        <option value="${movie.movieID}">${movie.title}</option>
+                                        <option value="${movie.movieID}" ${SHOWTIME_EDIT.movieID == movie.movieID ? 'selected' : ''}>${movie.title}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -177,41 +191,43 @@
                             <div class="col-md-6">
                                 <label class="form-label">Chọn Phòng chiếu:</label>
                                 <select name="roomID" class="form-select" required>
-                                    <option value="" disabled selected>-- Hãy chọn phòng chiếu --</option>
                                     <c:forEach var="room" items="${ROOM_LIST}">
-                                        <option value="${room.roomID}">[ ${room.cinemaName} ] - ${room.roomName} (Sức chứa: ${room.capacity})</option>
+                                        <option value="${room.roomID}" ${SHOWTIME_EDIT.roomID == room.roomID ? 'selected' : ''}>[ ${room.cinemaName} ] - ${room.roomName}</option>
                                     </c:forEach>
                                 </select>
                             </div>
 
                             <div class="col-md-3">
                                 <label class="form-label">Ngày chiếu:</label>
-                                <input type="date" name="showDate" class="form-control" required>
+                                <input type="date" name="showDate" class="form-control" value="${SHOWTIME_EDIT.showDate}" required>
                             </div>
 
                             <div class="col-md-2">
-                                <label class="form-label">Giờ bắt đầu:</label>
-                                <input type="time" name="startTime" class="form-control" required>
+                                <label class="form-label">Bắt đầu:</label>
+                                <input type="time" name="startTime" class="form-control" value="${fn:substring(SHOWTIME_EDIT.startTime, 0, 5)}" required>
                             </div>
 
                             <div class="col-md-2">
-                                <label class="form-label">Giờ kết thúc:</label>
-                                <input type="time" name="endTime" class="form-control" required>
+                                <label class="form-label">Kết thúc:</label>
+                                <input type="time" name="endTime" class="form-control" value="${fn:substring(SHOWTIME_EDIT.endTime, 0, 5)}" required>
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label">Giá vé suất này (VNĐ):</label>
-                                <input type="number" name="price" class="form-control" value="80000" min="0" required>
+                                <label class="form-label">Giá vé (VNĐ):</label>
+                                <input type="number" name="price" class="form-control" value="${not empty SHOWTIME_EDIT ? SHOWTIME_EDIT.price : '80000'}" min="0" required>
                             </div>
 
                             <div class="col-md-2 d-flex align-items-end">
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input" type="checkbox" name="status" id="statusSwitch" checked style="width: 2.5em; height: 1.25em;">
+                                    <input class="form-check-input" type="checkbox" name="status" id="statusSwitch" ${empty SHOWTIME_EDIT or SHOWTIME_EDIT.status ? 'checked' : ''} style="width: 2.5em; height: 1.25em;">
                                     <label class="form-check-label ms-2 text-success fw-bold" for="statusSwitch">Mở Bán</label>
                                 </div>
                             </div>
 
                             <div class="col-12 mt-4 text-end">
+                                <c:if test="${not empty SHOWTIME_EDIT}">
+                                    <a href="MainController?action=adminShowtime&subAction=list" class="btn btn-secondary fw-bold px-4 rounded-pill me-2">Hủy Sửa</a>
+                                </c:if>
                                 <button type="submit" class="btn btn-primary fw-bold px-5 rounded-pill">
                                     <i class="fas fa-save me-2"></i>Lưu Lịch Chiếu
                                 </button>
@@ -222,7 +238,7 @@
                     <div class="admin-card">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4 class="card-title mb-0"><i class="fas fa-list me-2"></i>Danh sách Lịch Chiếu</h4>
-                            
+
                             <form action="MainController" method="GET" class="d-flex">
                                 <input type="hidden" name="action" value="adminShowtime">
                                 <input type="hidden" name="subAction" value="search">
@@ -244,6 +260,7 @@
                                         <th>Kết thúc</th>
                                         <th>Giá vé</th>
                                         <th>Trạng thái</th>
+                                        <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -274,6 +291,14 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
+                                            <td>
+                                                <a href="MainController?action=adminShowtime&subAction=edit&showtimeID=${st.showtimeID}" class="btn btn-sm btn-outline-warning" title="Sửa giờ">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="MainController?action=adminShowtime&subAction=delete&showtimeID=${st.showtimeID}" class="btn btn-sm btn-outline-danger" title="Hủy lịch" onclick="return confirm('Bạn có chắc muốn hủy suất chiếu này không?');">
+                                                    <i class="fas fa-calendar-times"></i>
+                                                </a>
+                                            </td>                                            
                                         </tr>
                                     </c:forEach>
                                 </tbody>

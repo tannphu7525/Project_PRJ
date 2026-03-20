@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.MovieDAO;
 import model.MovieDTO;
+import model.ShowtimeDAO;
+import model.ShowtimeDTO;
 import model.UserDTO;
 
 public class HomeController extends HttpServlet {
@@ -50,6 +52,11 @@ public class HomeController extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else if ("showtimes".equals(action)) {
+            ShowtimeDAO showtimes = new ShowtimeDAO();
+            request.setAttribute("LIST_SHOWTIME", showtimes.getAllShowtimes());
+            request.getRequestDispatcher("showtimes.jsp").forward(request, response);
+            return;
         }
 
         // Thanh Search Movie và Load List Movie

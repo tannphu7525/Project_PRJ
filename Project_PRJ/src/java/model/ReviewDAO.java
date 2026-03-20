@@ -28,14 +28,12 @@ public class ReviewDAO {
                                                 + "WHERE r.MovieID = ? "
                                                 + "ORDER BY r.ReviewDate DESC";
     
-    //User TỪNG XEM phim này chưa?
-    // Điều kiện: Có hóa đơn Completed + Có vé của phim đó + Ngày chiếu phải nhỏ hơn ngày hiện tại
     public boolean checkCanReview(int userID, int movieID) {
         boolean canReview = false;
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(CHECK_CAN_REVIEW)) {           
+             PreparedStatement ps = conn.prepareStatement(CHECK_CAN_REVIEW)) {            
             ps.setInt(1, userID);
-            ps.setInt(2, movieID);           
+            ps.setInt(2, movieID);            
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     canReview = true; 
@@ -47,11 +45,9 @@ public class ReviewDAO {
         return canReview;
     }
     
-    // Thêm đánh giá mới & Tự động cập nhật Avg_Rating
     public boolean insertReview(int userID, int movieID, int rating, String comment) {
         boolean check = false;
         try (Connection conn = DBUtils.getConnection()) {
-            // Thêm Review vào bảng
             try (PreparedStatement ps1 = conn.prepareStatement(INSERT_REVIEW)) {
                 ps1.setInt(1, userID);
                 ps1.setInt(2, movieID);
@@ -59,7 +55,6 @@ public class ReviewDAO {
                 ps1.setString(4, comment);
                 check = ps1.executeUpdate() > 0;
             }
-            //Nếu thêm thành công, Trigger tính lại Avg_Rating
             if (check) {
                 try (PreparedStatement ps2 = conn.prepareStatement(UPDATE_RATING)) {
                     ps2.setInt(1, movieID);
@@ -73,7 +68,6 @@ public class ReviewDAO {
         return check;
     }
 
-    // Lấy danh sách đánh giá của 1 bộ phim để hiển thị lên màn hình
     public ArrayList<ReviewDTO> getReviewsByMovieID(int movieID) {
         ArrayList<ReviewDTO> list = new ArrayList<>();                
         try (Connection conn = DBUtils.getConnection();
@@ -82,13 +76,8 @@ public class ReviewDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(new ReviewDTO(
-                            rs.getInt("ReviewID"),
-                            rs.getInt("UserID"),
-                            rs.getInt("MovieID"),
-                            rs.getInt("Rating"),
-                            rs.getString("Comment"),
-                            rs.getString("ReviewDate"),
-                            rs.getString("FullName") 
+                            rs.getInt("ReviewID"), rs.getInt("UserID"), rs.getInt("MovieID"),
+                            rs.getInt("Rating"), rs.getString("Comment"), rs.getString("ReviewDate"), rs.getString("FullName") 
                     ));
                 }
             }
@@ -96,5 +85,45 @@ public class ReviewDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    //HÀM DÀNH CHO ADMIN
+    public ArrayList<ReviewDTO> getAllReviewsForAdmin() {
+        ArrayList<ReviewDTO> list = new ArrayList<>();
+        String sql = "SELECT r.*, u.Username, m.Title AS MovieTitle " +
+                     "FROM Reviews r " +
+                     "JOIN Users u ON r.UserID = u.UserID " +
+                     "JOIN Movies m ON r.MovieID = m.MovieID " +
+                     "ORDER BY r.ReviewDate DESC"; 
+        
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+             
+            while (rs.next()) {
+                ReviewDTO review = new ReviewDTO();
+                review.setReviewID(rs.getInt("ReviewID"));
+                review.setMovieID(rs.getInt("MovieID"));
+                review.setUserID(rs.getInt("UserID"));
+                review.setRating(rs.getInt("Rating"));
+                review.setComment(rs.getString("Comment"));
+                review.setReviewDate(rs.getString("ReviewDate")); 
+                
+                review.setUserName(rs.getString("Username"));
+                review.setMovieTitle(rs.getString("MovieTitle"));
+                
+                list.add(review);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public boolean deleteReview(int reviewID) {
+        String sql = "DELETE FROM Reviews WHERE ReviewID = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, reviewID);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 }

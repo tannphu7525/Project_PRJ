@@ -114,4 +114,68 @@ public class BookingDAO {
         }
         return list;
     }    
+    
+    // CÁC HÀM DÀNH CHO ADMIN
+    // Lấy toàn bộ đơn hàng trên hệ thống
+    public ArrayList<OrderHistoryDTO> getAllOrders() {
+        ArrayList<OrderHistoryDTO> list = new ArrayList<>();
+        String sql = "SELECT o.OrderID, o.OrderDate, o.TotalAmount, o.OrderStatus, u.Username, " +
+                     "m.Title AS MovieTitle, c.CinemaName, r.RoomName, st.ShowDate, st.StartTime, " +
+                     "ISNULL(STRING_AGG(s.SeatName, ', '), 'Đã hủy ghế') AS Seats " +
+                     "FROM Orders o " +
+                     "JOIN Users u ON o.UserID = u.UserID " +
+                     "LEFT JOIN Tickets t ON o.OrderID = t.OrderID " +
+                     "LEFT JOIN Showtime st ON t.ShowtimeID = st.ShowtimeID " +
+                     "LEFT JOIN Movies m ON st.MovieID = m.MovieID " +
+                     "LEFT JOIN Room r ON st.RoomID = r.RoomID " +
+                     "LEFT JOIN Cinemas c ON r.CinemaID = c.CinemaID " +
+                     "LEFT JOIN Seats s ON t.SeatID = s.SeatID " +
+                     "GROUP BY o.OrderID, o.OrderDate, o.TotalAmount, o.OrderStatus, u.Username, m.Title, c.CinemaName, r.RoomName, st.ShowDate, st.StartTime " +
+                     "ORDER BY o.OrderDate DESC";
+
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement stm = conn.prepareStatement(sql);
+             ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                list.add(new OrderHistoryDTO(
+                        rs.getInt("OrderID"), rs.getTimestamp("OrderDate"), rs.getDouble("TotalAmount"),
+                        rs.getString("MovieTitle"), rs.getString("CinemaName"), rs.getString("RoomName"),
+                        rs.getDate("ShowDate"), rs.getTime("StartTime"), rs.getString("Seats"),
+                        rs.getString("Username"), rs.getString("OrderStatus")
+                ));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // Hủy đơn hàng: Đổi Status và Xóa Tickets để giải phóng ghế
+    public boolean cancelOrder(int orderID) {
+        boolean result = false;
+        String updateOrder = "UPDATE Orders SET OrderStatus = 'Cancelled' WHERE OrderID = ?";
+        String deleteTickets = "DELETE FROM Tickets WHERE OrderID = ?";
+        
+        try (Connection conn = DBUtils.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                // 1. Xóa vé để ghế trống lại
+                try (PreparedStatement ps1 = conn.prepareStatement(deleteTickets)) {
+                    ps1.setInt(1, orderID);
+                    ps1.executeUpdate();
+                }
+                // 2. Cập nhật trạng thái đơn hàng thành Cancelled
+                try (PreparedStatement ps2 = conn.prepareStatement(updateOrder)) {
+                    ps2.setInt(1, orderID);
+                    ps2.executeUpdate();
+                }
+                conn.commit();
+                result = true;
+            } catch (Exception e) {
+                conn.rollback();
+                e.printStackTrace();
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return result;
+    }
 }

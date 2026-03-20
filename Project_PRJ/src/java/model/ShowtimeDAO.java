@@ -135,4 +135,69 @@ public class ShowtimeDAO {
         }
         return list;
     }
+    
+    // Lấy 1 lịch chiếu theo ID
+    public ShowtimeDTO getShowtimeByID(int id) {
+        String sql = "SELECT * FROM Showtime WHERE ShowtimeID = ?";
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement stm = conn.prepareStatement(sql)) {
+            stm.setInt(1, id);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    ShowtimeDTO dto = new ShowtimeDTO();
+                    dto.setShowtimeID(rs.getInt("ShowtimeID"));
+                    dto.setRoomID(rs.getInt("RoomID"));
+                    dto.setMovieID(rs.getInt("MovieID"));
+                    dto.setShowDate(rs.getString("ShowDate"));
+                    dto.setStartTime(rs.getString("StartTime"));
+                    dto.setEndTime(rs.getString("EndTime"));
+                    dto.setPrice(rs.getDouble("Price"));
+                    dto.setStatus(rs.getBoolean("Status"));
+                    return dto;
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }
+
+    // Kiểm tra trùng lịch
+    public boolean checkConflictForUpdate(int roomID, String showDate, String startTime, String endTime, int currentID){
+        String sql = "SELECT TOP 1 ShowtimeID FROM Showtime WHERE RoomID = ? AND ShowDate = ? AND Status = 1 "
+                   + "AND (? < EndTime AND ? > StartTime) AND ShowtimeID != ?";
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement stm = conn.prepareStatement(sql)){
+            stm.setInt(1, roomID);
+            stm.setString(2, showDate);
+            stm.setString(3, startTime); 
+            stm.setString(4, endTime);  
+            stm.setInt(5, currentID);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) return true; 
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
+
+    // Cập nhật lịch chiếu
+    public boolean updateShowtime(ShowtimeDTO st) {
+        String sql = "UPDATE Showtime SET RoomID = ?, MovieID = ?, ShowDate = ?, StartTime = ?, EndTime = ?, Price = ?, Status = ? WHERE ShowtimeID = ?";
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement stm = conn.prepareStatement(sql)) {
+            stm.setInt(1, st.getRoomID());
+            stm.setInt(2, st.getMovieID());
+            stm.setString(3, st.getShowDate());
+            stm.setString(4, st.getStartTime());
+            stm.setString(5, st.getEndTime());
+            stm.setDouble(6, st.getPrice());
+            stm.setBoolean(7, st.isStatus());
+            stm.setInt(8, st.getShowtimeID());
+            return stm.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
+
+    // Xóa lịch chiếu
+    public boolean deleteShowtime(int id) {
+        String sql = "DELETE FROM Showtime WHERE ShowtimeID = ?";
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement stm = conn.prepareStatement(sql)) {
+            stm.setInt(1, id);
+            return stm.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
 }
