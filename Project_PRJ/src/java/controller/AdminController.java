@@ -125,13 +125,14 @@ public class AdminController extends HttpServlet {
 
                 javax.servlet.http.Part filePart = request.getPart("posterFile");
                 if (filePart != null && filePart.getSize() > 0) {
-                    String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                    String uploadPath = "D:\\GitHub\\Project_PRJ\\Project_PRJ\\web\\pic";
+                    String applicationPath = request.getServletContext().getRealPath("");
+                    String uploadPath = applicationPath + java.io.File.separator + "pic";
+
                     java.io.File uploadDir = new java.io.File(uploadPath);
                     if (!uploadDir.exists()) {
                         uploadDir.mkdir();
                     }
-                    String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
+                    String uniqueFileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
                     filePart.write(uploadPath + java.io.File.separator + uniqueFileName);
                     poster = "pic/" + uniqueFileName;
                 }
@@ -177,13 +178,14 @@ public class AdminController extends HttpServlet {
 
                 javax.servlet.http.Part filePart = request.getPart("posterFile");
                 if (filePart != null && filePart.getSize() > 0) {
-                    String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                    String uploadPath = "D:\\GitHub\\Project_PRJ\\Project_PRJ\\web\\pic";
+                    String applicationPath = request.getServletContext().getRealPath("");
+                    String uploadPath = applicationPath + java.io.File.separator + "pic";
+
                     java.io.File uploadDir = new java.io.File(uploadPath);
                     if (!uploadDir.exists()) {
                         uploadDir.mkdir();
                     }
-                    String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
+                    String uniqueFileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
                     filePart.write(uploadPath + java.io.File.separator + uniqueFileName);
                     poster = "pic/" + uniqueFileName;
                 }
@@ -515,8 +517,9 @@ public class AdminController extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg", "Lỗi hệ thống: " + e.getMessage());
-            request.getRequestDispatcher("admin_review.jsp").forward(request, response);
+            log("Error at AdminController: " + e.getMessage());
+            request.setAttribute("msg", "Hệ thống đang bận hoặc dữ liệu không hợp lệ. Vui lòng kiểm tra lại thao tác!");
+            adminMovie(request, response);
         }
     }
 
