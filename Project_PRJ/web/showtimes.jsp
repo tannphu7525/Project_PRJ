@@ -9,91 +9,140 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Chọn Suất Chiếu - PRJ Cinema</title>
         
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-        
         <style>
+            /* --- 1. BIẾN MÀU & RESET --- */
             :root {
                 --bg-body: #1b212c;
                 --bg-card: #28303d;
-                --accent-blue: #00d4ff;
+                --accent-blue: #0ea5e9;
+                --accent-hover: #0284c7;
                 --text-main: #f8fafc;
                 --text-muted: #94a3b8;
                 --navbar-bg: #111827;
                 --border-card: #334155;
             }
+            * { box-sizing: border-box; margin: 0; padding: 0; }
             body {
                 background-color: var(--bg-body);
-                font-family: 'Roboto', sans-serif;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 color: var(--text-main);
-                padding-bottom: 80px;
+                padding-bottom: 50px;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
             }
+            a { text-decoration: none; }
             
-            /* --- NAVBAR STYLE --- */
+            /* --- 2. THANH ĐIỀU HƯỚNG (NAVBAR) --- */
             .navbar {
                 background-color: var(--navbar-bg);
                 box-shadow: 0 4px 15px rgba(0,0,0,0.3);
                 border-bottom: 1px solid var(--border-card);
                 margin-bottom: 40px;
+                padding: 15px 0;
+            }
+            .navbar-container {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
             .navbar-brand {
-                color: var(--accent-blue) !important;
+                color: var(--accent-blue);
                 font-size: 1.5rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
 
-            /* --- CONTAINER BOX --- */
+            /* --- 3. BỐ CỤC CHÍNH --- */
+            .main-wrapper {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 0 20px;
+                flex: 1;
+                width: 100%;
+            }
+            
+            .btn-back {
+                color: var(--text-muted);
+                font-weight: 500;
+                transition: 0.2s;
+                display: inline-block;
+                margin-bottom: 20px;
+                font-size: 1rem;
+            }
+            .btn-back:hover { color: #fff; }
+
             .container-box {
                 background-color: #1a1e29;
                 border-radius: 16px;
-                padding: 40px 50px;
+                padding: 40px;
                 box-shadow: 0 15px 40px rgba(0,0,0,0.6);
                 border: 1px solid var(--border-card);
             }
             .page-title {
                 color: var(--accent-blue);
-                font-weight: 700;
+                font-weight: bold;
+                font-size: 1.8rem;
                 margin-bottom: 40px;
                 padding-bottom: 20px;
                 border-bottom: 2px solid var(--border-card);
                 text-transform: uppercase;
                 letter-spacing: 1px;
+                text-align: center;
             }
             
-            /* --- Phong cách nhóm theo Ngày --- */
+            /* --- 4. TRẠNG THÁI TRỐNG (EMPTY) --- */
+            .empty-state {
+                text-align: center;
+                padding: 50px 20px;
+            }
+            .empty-icon {
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 20px;
+                filter: grayscale(1) opacity(0.5);
+            }
+            .empty-state h4 { color: var(--text-muted); margin-bottom: 10px; font-size: 1.2rem; }
+            .empty-state p { color: #64748b; font-size: 0.95rem; }
+
+            /* --- 5. NHÓM NGÀY CHIẾU & LƯỚI SUẤT CHIẾU --- */
             .date-group {
-                margin-bottom: 35px;
+                margin-bottom: 40px;
             }
             .date-divider {
                 color: #e2e8f0;
-                font-size: 1.1rem;
-                font-weight: 600;
+                font-size: 1.2rem;
+                font-weight: bold;
                 margin-bottom: 20px;
                 display: flex;
                 align-items: center;
                 border-left: 4px solid var(--accent-blue);
-                padding-left: 15px;
+                padding: 12px 15px;
                 background-color: #262c38;
-                padding-top: 10px; 
-                padding-bottom: 10px;
                 border-radius: 4px;
+                letter-spacing: 0.5px;
             }
+            
             .showtime-grid {
                 display: grid;
+                /* Tự động chia cột, mỗi cột tối thiểu 180px */
                 grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
                 gap: 15px;
             }
 
-            /* --- Phong cách Thẻ Suất Chiếu mới --- */
+            /* --- 6. THẺ SUẤT CHIẾU (CARD) --- */
             .st-card {
                 display: block;
                 background-color: var(--bg-card);
                 border: 1px solid var(--border-card);
                 color: #fff;
                 border-radius: 10px;
-                padding: 15px;
+                padding: 20px 15px;
                 text-align: center;
-                text-decoration: none;
                 transition: all 0.3s ease-in-out;
                 position: relative;
                 overflow: hidden;
@@ -101,13 +150,15 @@
             }
             .st-card:hover {
                 border-color: var(--accent-blue);
-                color: #000;
                 transform: translateY(-5px);
-                box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+                box-shadow: 0 10px 20px rgba(14, 165, 233, 0.25);
             }
+            
+            /* Hiệu ứng nền xanh lướt lên khi hover */
             .st-card::before {
                 content: '';
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                position: absolute; 
+                top: 0; left: 0; width: 100%; height: 100%;
                 background-color: var(--accent-blue);
                 opacity: 0;
                 transition: 0.3s ease;
@@ -116,57 +167,57 @@
             .st-card:hover::before { opacity: 1; }
             
             .st-card-content {
-                position: relative; z-index: 2;
+                position: relative; 
+                z-index: 2;
             }
             .show-time {
                 font-size: 1.8rem;
-                font-weight: 700;
+                font-weight: bold;
                 color: var(--accent-blue);
                 transition: 0.3s;
+                margin-bottom: 5px;
             }
-            .st-card:hover .show-time { color: #000; }
+            .st-card:hover .show-time { color: #fff; }
             
             .room-info {
-                font-size: 0.8rem;
-                margin-top: 8px;
+                font-size: 0.85rem;
                 color: var(--text-muted);
                 transition: 0.3s;
+                line-height: 1.4;
             }
-            .st-card:hover .room-info { color: #333; }
+            .st-card:hover .room-info { color: rgba(255, 255, 255, 0.9); }
 
-            .btn-back {
+            /* --- 7. FOOTER --- */
+            footer {
+                text-align: center;
+                padding: 25px 0;
+                margin-top: 50px;
+                border-top: 1px solid var(--border-card);
                 color: var(--text-muted);
-                text-decoration: none;
-                font-weight: 500;
-                transition: 0.2s;
-                display: inline-block;
-                margin-bottom: 20px;
+                font-size: 0.9rem;
             }
-            .btn-back:hover { color: #fff; }
         </style>
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg sticky-top">
-            <div class="container">
-                <a class="navbar-brand fw-bold" href="HomeController">
-                    <i class="fas fa-film me-2"></i>PRJ CINEMA
-                </a>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a class="navbar-brand" href="HomeController">PRJ CINEMA</a>
             </div>
         </nav>
 
-        <div class="container">
-            <a href="HomeController" class="btn-back"><i class="fas fa-arrow-left me-2"></i>Quay lại Trang Chủ</a>
+        <div class="main-wrapper">
+            <a href="HomeController" class="btn-back">← Quay lại Trang Chủ</a>
 
             <div class="container-box">
-                <h2 class="page-title text-center"><i class="fas fa-ticket-alt me-3"></i>CHỌN SUẤT CHIẾU</h2>
+                <h2 class="page-title">🎟️ CHỌN SUẤT CHIẾU</h2>
 
                 <c:choose>
                     <c:when test="${empty SHOWTIME_LIST}">
-                        <div class="text-center py-5">
-                            <i class="fas fa-film fa-4x mb-4" style="color: #475569;"></i>
-                            <h4 style="color: #94a3b8;">Rất tiếc, bộ phim này hiện chưa có lịch chiếu.</h4>
-                            <p style="color: #64748b;">Vui lòng quay lại sau hoặc chọn bộ phim khác.</p>
+                        <div class="empty-state">
+                            <span class="empty-icon">🎬</span>
+                            <h4>Rất tiếc, bộ phim này hiện chưa có lịch chiếu.</h4>
+                            <p>Vui lòng quay lại sau hoặc chọn bộ phim khác.</p>
                         </div>
                     </c:when>
 
@@ -181,7 +232,7 @@
                                 
                                 <div class="date-group">
                                     <div class="date-divider">
-                                        <i class="far fa-calendar-alt me-2"></i> ${st.showDate}
+                                        📅 ${st.showDate}
                                     </div>
                                     <div class="showtime-grid">
                                         
@@ -192,7 +243,7 @@
                                 <div class="st-card-content">
                                     <div class="show-time">${fn:substring(st.startTime, 0, 5)}</div>
                                     <div class="room-info">
-                                        <i class="fas fa-map-marker-alt me-1"></i> ${st.cinemaName} <br>
+                                        📍 ${st.cinemaName} <br>
                                         (${st.roomName})
                                     </div>
                                 </div>
@@ -207,10 +258,9 @@
             </div>
         </div>
 
-        <footer class="text-center py-4 mt-5" style="border-top: 1px solid #334155;">
-            <p class="mb-0 text-muted">&copy; 2024 PRJ Cinema. All rights reserved.</p>
+        <footer>
+            <p>&copy; 2026 PRJ Cinema. All rights reserved.</p>
         </footer>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

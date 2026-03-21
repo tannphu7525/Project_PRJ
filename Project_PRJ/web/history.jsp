@@ -9,37 +9,75 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Lịch Sử Đặt Vé - PRJ Cinema</title>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
         <style>
-            /* Bảng màu đồng bộ toàn hệ thống */
+            /* --- 1. BIẾN MÀU & RESET --- */
             :root {
                 --bg-body: #111827;
                 --bg-card: #1f2937;
-                --accent-blue: #00d4ff;
+                --bg-darker: #0b0f19;
+                --accent-blue: #0ea5e9;
+                --accent-hover: #0284c7;
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
                 --border-color: #334155;
+                --success: #10b981;
+                --warning: #f59e0b;
+                --danger: #e11d48;
+                --gold: #FFD700;
             }
+            * { box-sizing: border-box; margin: 0; padding: 0; }
             body {
                 background-color: var(--bg-body);
-                font-family: 'Roboto', sans-serif;
-                color: #f8fafc; /* Màu chữ mặc định là trắng sáng */
-                overflow-x: hidden;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: var(--text-main);
+                line-height: 1.6;
+                padding-bottom: 50px;
             }
+            a { text-decoration: none; }
             
-            /* Navbar */
-            .navbar {
-                background-color: #0b0f19;
-                border-bottom: 1px solid var(--border-color);
-                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            }
-            .navbar-brand {
-                color: var(--accent-blue) !important;
-                letter-spacing: 1px;
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
             }
 
-            /* Khối chứa nội dung */
+            /* --- 2. THANH ĐIỀU HƯỚNG (NAVBAR) --- */
+            .navbar {
+                background-color: var(--bg-darker);
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                margin-bottom: 40px;
+            }
+            .navbar-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            .navbar-brand {
+                color: var(--accent-blue);
+                font-size: 1.5rem;
+                font-weight: bold;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+            .btn-outline-light {
+                border: 1px solid var(--text-muted);
+                color: var(--text-main);
+                padding: 8px 20px;
+                border-radius: 20px;
+                font-weight: bold;
+                transition: 0.3s;
+                font-size: 0.9rem;
+            }
+            .btn-outline-light:hover { background-color: var(--text-muted); color: var(--bg-darker); }
+
+            /* --- 3. KHUNG CHỨA NỘI DUNG (CARD) --- */
             .history-card {
                 background-color: var(--bg-card);
                 border: 1px solid var(--border-color);
@@ -48,35 +86,72 @@
                 box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             }
             .card-title {
-                color: #FFD700; /* Màu vàng Gold sáng */
+                color: var(--gold);
                 border-bottom: 2px solid var(--border-color);
                 padding-bottom: 15px;
+                margin-bottom: 25px;
                 font-weight: bold;
                 text-transform: uppercase;
                 letter-spacing: 1px;
+                text-align: center;
+                font-size: 1.8rem;
             }
 
-            /* Bảng dữ liệu */
-            .table-dark {
-                background-color: transparent;
+            /* --- 4. BẢNG DỮ LIỆU --- */
+            .table-responsive { overflow-x: auto; }
+            .custom-table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: center;
+                min-width: 900px;
             }
-            .table-dark th {
-                background-color: #111827;
-                color: var(--accent-blue); /* Tiêu đề cột màu xanh sáng */
-                border-color: var(--border-color);
+            .custom-table th, .custom-table td {
+                border: 1px solid var(--border-color);
+                padding: 15px;
+            }
+            .custom-table th {
+                background-color: var(--bg-darker);
+                color: var(--accent-blue);
                 text-transform: uppercase;
-                font-size: 0.95rem;
+                font-size: 0.9rem;
+                letter-spacing: 0.5px;
             }
-            .table-dark td {
+            .custom-table td {
                 background-color: var(--bg-card);
-                border-color: var(--border-color);
                 vertical-align: middle;
             }
+            .custom-table tr:hover td { background-color: #2a364a; } /* Hiệu ứng hover mượt hơn */
+
+            /* --- 5. ĐỊNH DẠNG TEXT TRONG BẢNG --- */
+            .text-start { text-align: left; }
+            .text-end { text-align: right; }
+            .text-center { text-align: center; }
+            .fw-bold { font-weight: bold; }
+            .fw-medium { font-weight: 500; }
             
-            /* Tem hiển thị Ghế */
+            .text-white { color: #ffffff; }
+            .text-light { color: #f8fafc; }
+            .text-muted { color: var(--text-muted); }
+            .text-info { color: var(--info); }
+            .text-warning { color: var(--warning); }
+            .text-success { color: var(--success); }
+            
+            .fs-5 { font-size: 1.25rem; }
+            .fs-6 { font-size: 1rem; }
+            .small { font-size: 0.85rem; }
+
+            /* Tem hiển thị Mã Đơn & Ghế */
+            .id-tag {
+                background-color: #475569;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 6px;
+                font-weight: bold;
+                letter-spacing: 1px;
+            }
             .seat-tag {
                 display: inline-block;
-                background-color: #e11d48; /* Đỏ hồng nổi bật */
+                background-color: var(--danger); 
                 color: #ffffff;
                 padding: 6px 12px;
                 border-radius: 6px;
@@ -85,41 +160,55 @@
                 letter-spacing: 1px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             }
-            
-            /* Ghi đè hiệu ứng hover của bảng */
-            .table-hover>tbody>tr:hover>td {
-                background-color: #334155 !important;
-                color: #fff !important;
+
+            /* --- 6. TRẠNG THÁI TRỐNG (EMPTY STATE) --- */
+            .empty-state {
+                text-align: center;
+                padding: 60px 20px;
             }
+            .empty-state p {
+                font-size: 1.2rem;
+                font-weight: 500;
+                margin-bottom: 20px;
+            }
+            .btn-info {
+                background-color: var(--info);
+                color: white;
+                padding: 12px 40px;
+                border-radius: 30px;
+                font-weight: bold;
+                font-size: 1.1rem;
+                display: inline-block;
+                transition: 0.3s;
+                border: none;
+            }
+            .btn-info:hover { background-color: var(--accent-hover); }
+
         </style>
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg sticky-top mb-4">
-            <div class="container">
-                <a class="navbar-brand fw-bold fs-4" href="HomeController">
-                    <i class="fas fa-film me-2"></i>PRJ CINEMA
-                </a>
-                <div class="d-flex align-items-center">
-                    <a href="HomeController" class="btn btn-outline-light btn-sm rounded-pill px-4 fw-bold">
-                        <i class="fas fa-arrow-left me-2"></i> Về Trang Chủ
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a class="navbar-brand" href="HomeController">PRJ CINEMA</a>
+                <div>
+                    <a href="HomeController" class="btn-outline-light">
+                        ← Về Trang Chủ
                     </a>
                 </div>
             </div>
         </nav>
 
-        <div class="container mb-5">
+        <div class="container">
             <div class="history-card">
                 
-                <h2 class="card-title text-center mb-4">
-                    <i class="fas fa-history me-2"></i> Lịch Sử Đặt Vé Của Bạn
-                </h2>
+                <h2 class="card-title">Lịch Sử Đặt Vé Của Bạn</h2>
 
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover table-bordered align-middle text-center mb-0">
+                    <table class="custom-table">
                         <thead>
                             <tr>
-                                <th>Mã Đơn</th>
+                                <th>Thứ tự</th>
                                 <th>Thời gian đặt</th>
                                 <th class="text-start">Phim</th>
                                 <th>Rạp - Phòng</th>
@@ -132,13 +221,9 @@
                             <c:choose>
                                 <c:when test="${empty HISTORY_LIST}">
                                     <tr>
-                                        <td colspan="7" class="text-center py-5">
-                                            <i class="fas fa-ticket-alt fs-1 text-light mb-3 d-block"></i>
-                                            <span class="text-white fs-5 fw-medium">Bạn chưa có lịch sử giao dịch nào. Hãy đặt vé ngay!</span>
-                                            <br>
-                                            <a href="HomeController" class="btn btn-info mt-3 rounded-pill fw-bold px-5 text-dark">
-                                                Mua vé ngay
-                                            </a>
+                                        <td colspan="7" class="empty-state">
+                                            <p>Bạn chưa có lịch sử giao dịch nào. Hãy đặt vé ngay!</p>
+                                            <a href="HomeController" class="btn-info">Mua vé ngay</a>
                                         </td>
                                     </tr>
                                 </c:when>
@@ -146,8 +231,8 @@
                                 <c:otherwise>
                                     <c:forEach var="item" items="${HISTORY_LIST}" varStatus="loop">
                                         <tr>
-                                            <td class="fw-bold text-white fs-5">
-                                                #${fn:length(HISTORY_LIST) - loop.index}
+                                            <td>
+                                                <span class="id-tag">#${fn:length(HISTORY_LIST) - loop.index}</span>
                                             </td>
 
                                             <td class="text-light fw-medium">
@@ -159,15 +244,17 @@
                                             </td>
 
                                             <td>
-                                                <span class="text-white fw-bold">${item.cinemaName}</span> <br> 
-                                                <span class="text-light small">(${item.roomName})</span>
+                                                <div class="text-white fw-bold">${item.cinemaName}</div>
+                                                <div class="text-muted small">(${item.roomName})</div>
                                             </td>
 
                                             <td>
-                                                <span class="text-white fw-medium"><fmt:formatDate value="${item.showDate}" pattern="dd/MM/yyyy"/></span> <br> 
-                                                <span class="text-warning fw-bold fs-6">
-                                                    <i class="far fa-clock me-1"></i><fmt:formatDate value="${item.startTime}" pattern="HH:mm"/>
-                                                </span>
+                                                <div class="text-white fw-medium">
+                                                    <fmt:formatDate value="${item.showDate}" pattern="dd/MM/yyyy"/>
+                                                </div>
+                                                <div class="text-warning fw-bold">
+                                                    <fmt:formatDate value="${item.startTime}" pattern="HH:mm"/>
+                                                </div>
                                             </td>
 
                                             <td>
@@ -188,6 +275,5 @@
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

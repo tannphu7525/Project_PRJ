@@ -1,4 +1,4 @@
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -9,185 +9,308 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Admin Dashboard - PRJ Cinema</title>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
         <style>
+            /* --- 1. BIẾN MÀU & RESET --- */
             :root {
-                --bg-body: #111827; /* Màu nền tối hơn cho Dashboard */
+                --bg-body: #111827; 
                 --bg-card: #1f2937;
-                --accent-blue: #00d4ff;
+                --bg-darker: #0b0f19;
+                --accent-blue: #3b82f6;
+                --accent-hover: #2563eb;
                 --text-main: #f8fafc;
                 --text-muted: #94a3b8;
                 --border-color: #334155;
+                --success: #10b981;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+            }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
             }
             body {
                 background-color: var(--bg-body);
-                font-family: 'Roboto', sans-serif;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 color: var(--text-main);
-                overflow-x: hidden;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                overflow: hidden; /* Cố định trang, chỉ cho cuộn phần nội dung */
             }
+            a { text-decoration: none; }
 
-            /* --- TOP NAVBAR --- */
+            /* --- 2. THANH ĐIỀU HƯỚNG (NAVBAR) --- */
             .navbar {
-                background-color: #0b0f19;
+                background-color: var(--bg-darker);
                 border-bottom: 1px solid var(--border-color);
-                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                z-index: 1030;
+                padding: 15px 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 10;
             }
             .navbar-brand {
-                color: var(--accent-blue) !important;
-                font-size: 1.5rem;
+                color: var(--accent-blue);
+                font-size: 1.4rem;
+                font-weight: bold;
                 letter-spacing: 1px;
             }
+            .navbar-brand span { color: var(--text-muted); font-size: 0.9rem; font-weight: normal; margin-left: 10px; }
+            .btn-logout {
+                border: 1px solid var(--danger);
+                color: var(--danger);
+                padding: 8px 20px;
+                border-radius: 20px;
+                font-weight: bold;
+                transition: 0.3s;
+            }
+            .btn-logout:hover { background-color: var(--danger); color: white; }
 
-            /* --- SIDEBAR (CỘT TRÁI) --- */
+            /* --- 3. BỐ CỤC CHÍNH (WRAPPER) --- */
+            .wrapper {
+                display: flex;
+                flex: 1;
+                overflow: hidden;
+            }
+
+            /* --- 4. CỘT TRÁI (SIDEBAR) --- */
             .sidebar {
-                background-color: #0b0f19;
-                min-height: calc(100vh - 60px); /* Kéo dài hết màn hình trừ đi navbar */
+                width: 260px;
+                background-color: var(--bg-darker);
                 border-right: 1px solid var(--border-color);
+                overflow-y: auto;
                 padding-top: 20px;
             }
             .sidebar-link {
                 color: var(--text-muted);
                 padding: 15px 25px;
                 display: block;
-                text-decoration: none;
                 font-weight: 500;
-                font-size: 1.1rem;
-                border-bottom: 1px solid #1f2937;
-                transition: all 0.3s ease;
+                font-size: 1.05rem;
+                border-bottom: 1px solid #1a2333;
+                transition: 0.3s;
             }
             .sidebar-link:hover, .sidebar-link.active {
                 background-color: var(--bg-card);
                 color: var(--accent-blue);
                 border-left: 5px solid var(--accent-blue);
             }
-            .sidebar-link i {
-                width: 30px; /* Căn đều các icon */
-            }
 
-            /* --- MAIN CONTENT (CỘT PHẢI) --- */
+            /* --- 5. CỘT PHẢI (MAIN CONTENT) --- */
             .main-content {
+                flex: 1;
                 padding: 30px;
-                background-color: var(--bg-body);
-                min-height: calc(100vh - 60px);
+                overflow-y: auto;
             }
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+            }
+            .page-header h2 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+            .btn-action {
+                background-color: #0ea5e9;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-weight: bold;
+                transition: 0.3s;
+                border: none;
+                cursor: pointer;
+            }
+            .btn-action:hover { background-color: #0284c7; }
 
-            /* --- THÀNH PHẦN BÊN TRONG --- */
+            /* --- 6. KHUNG (CARD) & FORM GRID TỰ TẠO --- */
             .admin-card {
                 background-color: var(--bg-card);
                 border: 1px solid var(--border-color);
                 border-radius: 12px;
                 padding: 25px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
                 margin-bottom: 30px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             }
             .card-title {
                 color: var(--accent-blue);
                 border-left: 4px solid var(--accent-blue);
                 padding-left: 15px;
-                font-weight: bold;
                 margin-bottom: 25px;
+                font-size: 1.2rem;
                 text-transform: uppercase;
             }
-            .table-dark {
-                background-color: transparent;
+
+            /* Hệ thống lưới Grid thay thế Bootstrap */
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 20px;
             }
-            .table-dark th {
-                background-color: #111827;
-                color: var(--accent-blue);
-                border-color: var(--border-color);
-            }
-            .table-dark td {
-                background-color: var(--bg-card);
-                border-color: var(--border-color);
-                vertical-align: middle;
-            }
+            .col-6 { grid-column: span 6; }
+            .col-3 { grid-column: span 3; }
+            .col-2 { grid-column: span 2; }
+            .col-12 { grid-column: span 12; }
+
             .form-label {
+                display: block;
+                margin-bottom: 8px;
                 font-weight: 500;
                 color: #cbd5e1;
+                font-size: 0.95rem;
             }
             .form-control, .form-select {
+                width: 100%;
                 background-color: #0f172a;
                 border: 1px solid var(--border-color);
                 color: white;
+                padding: 10px 15px;
+                border-radius: 6px;
+                font-family: inherit;
+                font-size: 1rem;
             }
             .form-control:focus, .form-select:focus {
+                outline: none;
                 border-color: var(--accent-blue);
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            }
+            
+            .btn-submit {
+                background-color: var(--accent-blue);
                 color: white;
-                background-color: #0f172a;
-                box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+                border: none;
+                padding: 12px 40px;
+                border-radius: 30px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: 0.3s;
+                font-size: 1rem;
+            }
+            .btn-submit:hover { background-color: var(--accent-hover); }
+
+            /* --- 7. BẢNG DỮ LIỆU (TABLE) --- */
+            .table-responsive { overflow-x: auto; }
+            .custom-table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: center;
+                min-width: 900px;
+            }
+            .custom-table th, .custom-table td {
+                border: 1px solid var(--border-color);
+                padding: 12px 15px;
+            }
+            .custom-table th {
+                background-color: var(--bg-darker);
+                color: var(--accent-blue);
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+            .custom-table td { background-color: var(--bg-card); vertical-align: middle; }
+            .custom-table tr:hover td { background-color: #253347; }
+            
+            .text-left { text-align: left; }
+            .fw-bold { font-weight: bold; }
+            .text-accent { color: var(--accent-blue); }
+            .text-warning { color: var(--warning); }
+            .text-danger { color: var(--danger); }
+            
+            .badge {
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                display: inline-block;
+            }
+            .bg-success { background-color: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+            .bg-danger { background-color: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+            /* --- 8. THÔNG BÁO (ALERT) --- */
+            .alert {
+                background-color: rgba(16, 185, 129, 0.15);
+                border: 1px solid var(--success);
+                color: #34d399;
+                padding: 15px 20px;
+                border-radius: 8px;
+                margin-bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: bold;
+            }
+            .alert-close {
+                background: transparent;
+                border: none;
+                color: white;
+                font-size: 1.2rem;
+                cursor: pointer;
+                opacity: 0.7;
+            }
+            .alert-close:hover { opacity: 1; }
+            
+            /* Cấu hình checkbox trạng thái */
+            .status-container {
+                display: flex;
+                align-items: center;
+                height: 100%;
+                padding-top: 25px; /* Để căn bằng với các input khác */
+            }
+            .status-checkbox {
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+                accent-color: var(--success);
+            }
+            .status-label {
+                margin-left: 10px;
+                color: var(--success);
+                font-weight: bold;
+                cursor: pointer;
             }
         </style>
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg sticky-top">
-            <div class="container-fluid px-4">
-                <a class="navbar-brand fw-bold" href="MainController?action=adminMovie&subAction=list">
-                    <i class="fas fa-film me-2"></i>PRJ CINEMA <span class="text-white fs-6 ms-2 fw-normal">| Hệ thống Quản trị</span>
-                </a>
-                <div class="d-flex align-items-center">
-                   
-                    <a href="MainController?action=logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
-                        <i class="fas fa-sign-out-alt me-1"></i> Thoát
-                    </a>
-                </div>
-            </div>
+        <nav class="navbar">
+            <a class="navbar-brand" href="MainController?action=adminMovie&subAction=list">
+                PRJ CINEMA <span>| Hệ thống Quản trị</span>
+            </a>
+            <a href="MainController?action=logout" class="btn-logout">Log Out</a>
         </nav>
 
-        <div class="container-fluid">
-            <div class="row">   
+        <div class="wrapper">
+            
+            <div class="sidebar">
+                <a href="HomeController" class="sidebar-link">Trang chủ</a>
+                <a href="MainController?action=adminMovie" class="sidebar-link">Quản lý Phim</a>
+                <a href="MainController?action=adminShowtime&subAction=list" class="sidebar-link active">Quản lý Lịch chiếu</a>
+                <a href="MainController?action=adminVoucher" class="sidebar-link">Quản lý Voucher</a>
+                <a href="#" class="sidebar-link" style="color: #475569; pointer-events: none;">Quản lý User (Sắp ra mắt)</a>
+            </div>
 
-                <div class="col-md-3 col-lg-2 p-0 sidebar d-none d-md-block position-sticky overflow-auto" style="top: 70px; height: calc(100vh - 70px);">
-
-                    <a href="HomeController" class="sidebar-link">
-                        <i class="fas fa-home"></i> Trang chủ
-                    </a>
-
-                    <a href="MainController?action=adminMovie" class="sidebar-link">
-                        <i class="fas fa-video"></i> Quản lý Phim
-                    </a>
-
-                    <a href="MainController?action=adminShowtime&subAction=list" class="sidebar-link active">
-                        <i class="fas fa-calendar-alt"></i> Quản lý Lịch chiếu
-                    </a>
-
-                    <a href="MainController?action=adminVoucher" class="sidebar-link">
-                        <i class="fas fa-ticket-alt"></i> Quản lý Voucher
-                    </a>
-
-                    <a href="#" class="sidebar-link text-secondary">
-                        <i class="fas fa-users"></i> Quản lý User (Sắp ra mắt)
-                    </a>
+            <div class="main-content">
+                
+                <div class="page-header">
+                    <h2>Quản Lý Lịch Chiếu</h2>
+                    <a href="MainController?action=adminShowtime&subAction=list" class="btn-action">Tải lại dữ liệu</a>
                 </div>
 
-                <div class="col-md-9 col-lg-10 main-content">
-
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="fw-bold mb-0 text-white">QUẢN LÝ LỊCH CHIẾU</h2>
-                        <a href="MainController?action=adminShowtime&subAction=list" class="btn btn-info px-4 rounded-pill fw-bold">
-                            <i class="fas fa-sync-alt me-2"></i>Tải lại dữ liệu
-                        </a>
+                <c:if test="${not empty msg}">
+                    <div class="alert" id="successAlert">
+                        <span>Trạng thái: ${msg}</span>
+                        <button class="alert-close" onclick="document.getElementById('successAlert').style.display='none'">X</button>
                     </div>
+                </c:if>
 
-                    <c:if test="${not empty msg}">
-                        <div class="alert alert-success alert-dismissible fade show fw-bold" role="alert">
-                            <i class="fas fa-check-circle me-2"></i> ${msg}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    </c:if>
+                <div class="admin-card">
+                    <h4 class="card-title">Thêm Lịch Chiếu Mới</h4>
 
-                    <div class="admin-card">
-                        <h4 class="card-title"><i class="fas fa-calendar-plus me-2"></i>Thêm Lịch Chiếu Mới</h4>
+                    <form action="MainController" method="POST">
+                        <input type="hidden" name="action" value="adminShowtime">
+                        <input type="hidden" name="subAction" value="add">
 
-                        <form action="MainController" method="POST" class="row g-3">
-                            <input type="hidden" name="action" value="adminShowtime">
-                            <input type="hidden" name="subAction" value="add">
-
-                            <div class="col-md-6">
+                        <div class="form-grid">
+                            <div class="col-6">
                                 <label class="form-label">Chọn Phim:</label>
                                 <select name="movieID" class="form-select" required>
                                     <c:forEach var="movie" items="${MOVIE_LIST}">
@@ -196,7 +319,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-6">
                                 <label class="form-label">Chọn Phòng chiếu:</label>
                                 <select name="roomID" class="form-select" required>
                                     <option value="" disabled selected>-- Hãy chọn phòng chiếu --</option>
@@ -206,92 +329,95 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-3">
                                 <label class="form-label">Ngày chiếu:</label>
                                 <input type="date" name="showDate" class="form-control" required>
                             </div>
 
-                            <div class="col-md-2">
+                            <div class="col-2">
                                 <label class="form-label">Bắt đầu:</label>
                                 <input type="time" name="startTime" class="form-control" required>
                             </div>
 
-                            <div class="col-md-2">
+                            <div class="col-2">
                                 <label class="form-label">Kết thúc:</label>
                                 <input type="time" name="endTime" class="form-control" required>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-3">
                                 <label class="form-label">Giá vé (VNĐ):</label>
                                 <input type="number" name="price" class="form-control" value="80000" min="0" required>
                             </div>
 
-                            <div class="col-md-2 d-flex align-items-end">
-                                <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input" type="checkbox" name="status" id="statusSwitch" checked style="width: 2.5em; height: 1.25em;">
-                                    <label class="form-check-label ms-2 text-success fw-bold" for="statusSwitch">Mở Bán</label>
+                            <div class="col-2">
+                                <div class="status-container">
+                                    <input type="checkbox" name="status" id="statusCheck" class="status-checkbox" checked>
+                                    <label for="statusCheck" class="status-label">Mở Bán</label>
                                 </div>
                             </div>
 
-                            <div class="col-12 mt-4 text-end">
-                                <button type="submit" class="btn btn-primary fw-bold px-5 rounded-pill">
-                                    <i class="fas fa-save me-2"></i>Lưu Lịch Chiếu
-                                </button>
+                            <div class="col-12" style="text-align: right; margin-top: 15px;">
+                                <button type="submit" class="btn-submit">Lưu Lịch Chiếu</button>
                             </div>
-                        </form>
-                    </div>
-
-                    <div class="admin-card">
-                        <h4 class="card-title"><i class="fas fa-list me-2"></i>Danh sách Lịch Chiếu</h4>
-
-                        <div class="table-responsive">
-                            <table class="table table-dark table-hover table-bordered align-middle text-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Mã</th>
-                                        <th class="text-start">Tên Phim</th>
-                                        <th>Rạp</th>
-                                        <th>Phòng</th>
-                                        <th>Ngày chiếu</th>
-                                        <th>Bắt đầu</th>
-                                        <th>Kết thúc</th>
-                                        <th>Giá vé</th>
-                                        <th>Trạng thái</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach var="st" items="${SHOWTIME_LIST}">
-                                        <tr>
-                                            <td>${st.showtimeID}</td>
-                                            <td class="text-start text-accent fw-bold">${st.movieTitle}</td>
-                                            <td>${st.cinemaName}</td>
-                                            <td>${st.roomName}</td>
-                                            <td>${st.showDate}</td>
-                                            <td class="fw-bold">${fn:substring(st.startTime, 0, 5)}</td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${st.endTime != null}">${fn:substring(st.endTime, 0, 5)}</c:when>
-                                                    <c:otherwise><span class="text-danger fst-italic">N/A</span></c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td class="text-warning fw-bold">
-                                                <fmt:formatNumber value="${st.price}" type="number" pattern="#,###"/> ₫
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${st.status}">
-                                                        <span class="badge bg-success px-3 py-2">Mở bán</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="badge bg-danger px-3 py-2">Đã khóa</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
                         </div>
-                    </div> </div> </div> </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h4 class="card-title">Danh sách Lịch Chiếu</h4>
+
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th class="text-left">Tên Phim</th>
+                                    <th>Rạp</th>
+                                    <th>Phòng</th>
+                                    <th>Ngày chiếu</th>
+                                    <th>Bắt đầu</th>
+                                    <th>Kết thúc</th>
+                                    <th>Giá vé</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="st" items="${SHOWTIME_LIST}">
+                                    <tr>
+                                        <td>${st.showtimeID}</td>
+                                        <td class="text-left text-accent fw-bold">${st.movieTitle}</td>
+                                        <td>${st.cinemaName}</td>
+                                        <td>${st.roomName}</td>
+                                        <td>${st.showDate}</td>
+                                        <td class="fw-bold">${fn:substring(st.startTime, 0, 5)}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${st.endTime != null}">${fn:substring(st.endTime, 0, 5)}</c:when>
+                                                <c:otherwise><span class="text-danger" style="font-style: italic;">N/A</span></c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td class="text-warning fw-bold">
+                                            <fmt:formatNumber value="${st.price}" type="number" pattern="#,###"/> ₫
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${st.status}">
+                                                    <span class="badge bg-success">Mở bán</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge bg-danger">Đã khóa</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </body>
 </html>

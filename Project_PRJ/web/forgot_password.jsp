@@ -5,147 +5,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Forgot password - PRJ Cinema</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Quên mật khẩu - PRJ Cinema</title>
     
     <style>
-        /* Đồng bộ nền tối với toàn hệ thống */
+        /* --- 1. RESET & NỀN TỐI --- */
         body {
-            background-color: #111827; /* Nền xám đen rất đậm */
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #f8fafc; /* Chữ trắng sáng nhẹ */
+            background-color: #111827; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #f8fafc; 
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
+            box-sizing: border-box;
         }
+        * { box-sizing: border-box; }
         
-        /* Khung chứa Form (Card) */
+        /* --- 2. KHUNG FORM (CARD) --- */
         .auth-card {
-            background-color: #1f2937; /* Nền xám đậm vừa */
-            border: 1px solid #334155; /* Viền xám xanh nhạt */
+            background-color: #1f2937; 
+            border: 1px solid #334155; 
             border-radius: 12px;
             padding: 40px;
             width: 100%;
             max-width: 450px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6); /* Đổ bóng tạo chiều sâu */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
         }
         
-        /* Tiêu đề chính */
+        /* Tiêu đề & Phụ đề */
         .auth-title {
-            /* ĐÃ THAY ĐỔI: Chuyển từ Đỏ sang Xanh dương chuyên nghiệp */
             color: #3b82f6; 
             font-weight: bold;
             text-align: center;
+            margin-top: 0;
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-size: 1.5rem;
         }
-
-        /* Dòng hướng dẫn nhỏ */
         .auth-subtitle {
             text-align: center;
-            color: #94a3b8; /* Màu chữ xám nhạt */
+            color: #94a3b8; 
             font-size: 0.9rem;
             margin-bottom: 25px;
+            line-height: 1.5;
         }
         
-        /* Cấu hình các ô nhập liệu (Input) trong Dark Mode */
-        .form-control {
-            background-color: #334155; /* Nền ô nhập liệu xám xanh đậm */
-            border: 1px solid #475569; /* Viền xám xanh nhẹ */
-            color: #fff; /* Chữ trong ô màu trắng */
+        /* --- 3. THÔNG BÁO LỖI --- */
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #f87171;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
         }
-        .form-control:focus {
-            background-color: #334155;
-            color: #fff;
-            /* ĐÃ THAY ĐỔI: Viền và bóng đổ khi chọn chuyển sang màu Xanh dương */
-            border-color: #3b82f6; 
-            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        .btn-close {
+            background: transparent;
+            border: none;
+            color: #f87171;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.8;
         }
-        .form-control::placeholder {
-            color: #94a3b8; /* Màu chữ gợi ý */
-        }
+        .btn-close:hover { opacity: 1; }
         
-        /* Cấu hình phần biểu tượng bên cạnh ô nhập liệu */
-        .input-group-text {
-            background-color: #0f172a; /* Nền biểu tượng đen đậm */
-            border: 1px solid #475569;
-            color: #94a3b8; /* Màu biểu tượng xám nhạt */
+        /* --- 4. Ô NHẬP LIỆU (INPUT) --- */
+        .form-group {
+            margin-bottom: 25px;
         }
         .form-label {
+            display: block;
             font-weight: 500;
-            color: #cbd5e1; /* Màu nhãn trắng xanh nhạt */
+            color: #cbd5e1;
             font-size: 0.95rem;
+            margin-bottom: 8px;
         }
+        .form-control {
+            width: 100%;
+            background-color: #334155;
+            border: 1px solid #475569;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-control:focus {
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+        .form-control::placeholder { color: #94a3b8; }
         
-        /* Cấu hình Nút bấm */
+        /* --- 5. NÚT BẤM (BUTTON) --- */
         .btn-cinema {
-            /* ĐÃ THAY ĐỔI: Nền nút chuyển sang màu Xanh dương */
+            width: 100%;
             background-color: #3b82f6; 
             color: white;
             border: none;
             font-weight: bold;
             padding: 12px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-cinema:hover:not(:disabled) {
+            background-color: #2563eb; 
+        }
+        .btn-cinema:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Vòng xoay Loading tự làm bằng CSS */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Liên kết quay lại */
+        .back-link-container {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .back-link {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-size: 0.9rem;
             transition: 0.3s;
         }
-        .btn-cinema:hover {
-            /* ĐÃ THAY ĐỔI: Màu xanh dương đậm hơn khi rê chuột vào */
-            background-color: #2563eb; 
-            color: white;
+        .back-link:hover {
+            color: #38bdf8;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
     <div class="auth-card">
-        <h3 class="auth-title">
-            <i class="fas fa-unlock-alt me-2"></i> Quên Mật Khẩu
-        </h3>
+        <h3 class="auth-title">Quên Mật Khẩu</h3>
         <p class="auth-subtitle">
             Vui lòng nhập địa chỉ email bạn đã đăng ký. Chúng tôi sẽ gửi một mã OTP gồm 6 chữ số để giúp bạn khôi phục tài khoản.
         </p>
 
         <c:if test="${not empty ERROR}">
-            <div class="alert alert-danger alert-dismissible fade show text-center py-2" role="alert">
-                <i class="fas fa-exclamation-triangle me-1"></i> <strong>${ERROR}</strong>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close" style="padding: 10px;"></button>
+            <div class="alert-danger" id="errorAlert">
+                <span><strong>Lỗi:</strong> ${ERROR}</span>
+                <button type="button" class="btn-close" onclick="document.getElementById('errorAlert').style.display='none'">X</button>
             </div>
         </c:if>
 
         <form action="ForgotPasswordController" method="POST" id="forgotForm">
             <input type="hidden" name="action" value="sendOTP">
             
-            <div class="mb-4">
+            <div class="form-group">
                 <label class="form-label">Nhập Email của bạn:</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                    <input type="email" name="email" class="form-control" placeholder="example@gmail.com" required autocomplete="email">
-                </div>
+                <input type="email" name="email" class="form-control" placeholder="example@gmail.com" required autocomplete="email">
             </div>
             
-            <button type="submit" class="btn btn-cinema w-100 rounded-pill mt-2" id="submitBtn">
-                <i class="fas fa-paper-plane me-1"></i> Gửi mã OTP
+            <button type="submit" class="btn-cinema" id="submitBtn">
+                Gửi mã OTP
             </button>
         </form>
         
-        <div class="text-center mt-4">
-            <a href="login.jsp" class="text-decoration-none text-info small">
-                <i class="fas fa-arrow-left me-1"></i> Quay lại Đăng nhập
+        <div class="back-link-container">
+            <a href="login.jsp" class="back-link">
+                &larr; Quay lại Đăng nhập
             </a>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
         document.getElementById('forgotForm').addEventListener('submit', function() {
             var btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Đang gửi...';
-            btn.classList.add('disabled');
+            // Thay thế nội dung nút thành vòng xoay CSS thuần
+            btn.innerHTML = '<span class="spinner"></span> Đang gửi...';
+            // Vô hiệu hóa nút (Dùng thuộc tính disabled chuẩn của HTML thay vì class)
+            btn.disabled = true;
         });
     </script>
 </body>
