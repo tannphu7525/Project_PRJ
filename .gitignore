@@ -15,3 +15,5 @@ nbproject/Package-*.bash
 # Bỏ qua cấu hình hệ điều hành
 .DS_Store
 Thumbs.db
+Project_PRJ/nbproject/private/private.properties
+*.properties

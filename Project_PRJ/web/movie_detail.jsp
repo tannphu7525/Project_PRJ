@@ -7,7 +7,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>${MOVIE_DETAIL.title} - PRJ Cinema</title>
-        
+
         <style>
             /* --- 1. BIẾN MÀU & RESET --- */
             :root {
@@ -22,7 +22,11 @@
                 --warning: #f59e0b;
                 --danger: #ef4444;
             }
-            * { box-sizing: border-box; margin: 0; padding: 0; }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
             body {
                 background-color: var(--bg-body);
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -30,8 +34,14 @@
                 line-height: 1.6;
                 padding-bottom: 50px;
             }
-            a { text-decoration: none; }
-            .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+            a {
+                text-decoration: none;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
 
             /* --- 2. THANH ĐIỀU HƯỚNG (NAVBAR) --- */
             .navbar {
@@ -58,9 +68,16 @@
                 letter-spacing: 1px;
                 text-transform: uppercase;
             }
-            .user-area { display: flex; align-items: center; gap: 15px; }
-            .user-name { font-weight: bold; font-size: 0.9rem; }
-            
+            .user-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            .user-name {
+                font-weight: bold;
+                font-size: 0.9rem;
+            }
+
             .btn {
                 padding: 8px 20px;
                 border-radius: 20px;
@@ -72,18 +89,34 @@
                 display: inline-block;
                 border: 1px solid transparent;
             }
-            .btn-outline-danger { border-color: var(--danger); color: var(--danger); background: transparent; }
-            .btn-outline-danger:hover { background: var(--danger); color: white; }
-            .btn-outline-light { border-color: var(--text-muted); color: var(--text-main); background: transparent; }
-            .btn-outline-light:hover { background: var(--text-muted); color: var(--bg-darker); }
-            
+            .btn-outline-danger {
+                border-color: var(--danger);
+                color: var(--danger);
+                background: transparent;
+            }
+            .btn-outline-danger:hover {
+                background: var(--danger);
+                color: white;
+            }
+            .btn-outline-light {
+                border-color: var(--text-muted);
+                color: var(--text-main);
+                background: transparent;
+            }
+            .btn-outline-light:hover {
+                background: var(--text-muted);
+                color: var(--bg-darker);
+            }
+
             .btn-back {
                 border-color: var(--border-color);
                 color: var(--text-main);
                 background: transparent;
                 margin-bottom: 30px;
             }
-            .btn-back:hover { background: var(--border-color); }
+            .btn-back:hover {
+                background: var(--border-color);
+            }
 
             /* --- 3. CHI TIẾT PHIM (GRID 2 CỘT) --- */
             .movie-layout {
@@ -93,7 +126,9 @@
                 margin-bottom: 50px;
             }
             @media (max-width: 768px) {
-                .movie-layout { grid-template-columns: 1fr; }
+                .movie-layout {
+                    grid-template-columns: 1fr;
+                }
             }
 
             .movie-poster {
@@ -123,9 +158,17 @@
                 margin-bottom: 25px;
                 font-size: 1.3rem;
             }
-            .star-icon { color: var(--warning); }
-            .rating-score { font-weight: bold; color: var(--text-main); }
-            .rating-max { color: var(--text-muted); font-size: 1rem; }
+            .star-icon {
+                color: var(--warning);
+            }
+            .rating-score {
+                font-weight: bold;
+                color: var(--text-main);
+            }
+            .rating-max {
+                color: var(--text-muted);
+                font-size: 1rem;
+            }
 
             .description {
                 font-size: 1.1rem;
@@ -149,7 +192,10 @@
                 border-radius: 30px;
                 box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
             }
-            .btn-buy:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
+            .btn-buy:hover {
+                background-color: var(--accent-hover);
+                transform: translateY(-2px);
+            }
 
             /* --- 4. KHU VỰC ĐÁNH GIÁ (REVIEWS) --- */
             .review-zone {
@@ -176,10 +222,21 @@
                 padding: 20px;
                 margin-bottom: 40px;
             }
-            .write-review-box h5 { color: var(--warning); margin-bottom: 15px; font-size: 1.1rem; }
-            
-            .form-group { margin-bottom: 15px; }
-            .form-label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: bold; }
+            .write-review-box h5 {
+                color: var(--warning);
+                margin-bottom: 15px;
+                font-size: 1.1rem;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+            .form-label {
+                display: block;
+                margin-bottom: 8px;
+                color: var(--text-main);
+                font-weight: bold;
+            }
             .form-select, .form-textarea {
                 width: 100%;
                 background-color: #334155;
@@ -191,16 +248,25 @@
                 font-size: 1rem;
                 outline: none;
             }
-            .form-select { width: auto; min-width: 200px; cursor: pointer; }
-            .form-textarea { resize: vertical; min-height: 80px; }
-            
+            .form-select {
+                width: auto;
+                min-width: 200px;
+                cursor: pointer;
+            }
+            .form-textarea {
+                resize: vertical;
+                min-height: 80px;
+            }
+
             .btn-submit-review {
                 background-color: var(--warning);
                 color: #000;
                 border-radius: 6px;
                 padding: 10px 25px;
             }
-            .btn-submit-review:hover { background-color: #d97706; }
+            .btn-submit-review:hover {
+                background-color: #d97706;
+            }
 
             .alert-lock {
                 background-color: var(--bg-darker);
@@ -221,8 +287,12 @@
                 margin-bottom: 25px;
                 border-bottom: 1px dashed var(--border-color);
             }
-            .review-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-            
+            .review-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+
             .avatar {
                 width: 50px;
                 height: 50px;
@@ -236,20 +306,42 @@
                 font-size: 1.2rem;
                 flex-shrink: 0;
             }
-            .review-content { flex: 1; }
-            .reviewer-name { color: var(--text-main); font-weight: bold; font-size: 1.05rem; margin-bottom: 5px; }
-            
+            .review-content {
+                flex: 1;
+            }
+            .reviewer-name {
+                color: var(--text-main);
+                font-weight: bold;
+                font-size: 1.05rem;
+                margin-bottom: 5px;
+            }
+
             .review-meta {
                 display: flex;
                 align-items: center;
                 gap: 15px;
                 margin-bottom: 10px;
             }
-            .stars { color: var(--warning); letter-spacing: 2px; }
-            .review-date { color: var(--text-muted); font-size: 0.85rem; }
-            
-            .review-text { color: #e2e8f0; line-height: 1.5; font-size: 0.95rem; }
-            .empty-review { text-align: center; color: var(--text-muted); font-style: italic; padding: 20px 0;}
+            .stars {
+                color: var(--warning);
+                letter-spacing: 2px;
+            }
+            .review-date {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+            }
+
+            .review-text {
+                color: #e2e8f0;
+                line-height: 1.5;
+                font-size: 0.95rem;
+            }
+            .empty-review {
+                text-align: center;
+                color: var(--text-muted);
+                font-style: italic;
+                padding: 20px 0;
+            }
 
         </style>
     </head>
@@ -317,7 +409,7 @@
                 <c:if test="${CAN_REVIEW}">
                     <div class="write-review-box">
                         <h5>Bạn đã xem phim này! Hãy để lại đánh giá nhé:</h5>
-                        
+
                         <form action="ReviewController" method="POST">
                             <input type="hidden" name="movieID" value="${MOVIE_DETAIL.movieID}">
 
@@ -358,17 +450,17 @@
                                     <div class="avatar">
                                         ${review.fullName.substring(0,1)}
                                     </div>
-                                    
+
                                     <div class="review-content">
                                         <div class="reviewer-name">${review.fullName}</div>
-                                        
+
                                         <div class="review-meta">
                                             <span class="stars">
                                                 <c:forEach begin="1" end="${review.rating}">★</c:forEach><c:forEach begin="${review.rating + 1}" end="5">☆</c:forEach>
-                                            </span>
-                                            <span class="review-date">${review.reviewDate}</span>
+                                                </span>
+                                                    <span class="review-date">${review.reviewDate}</span>
                                         </div>
-                                        
+
                                         <p class="review-text">${review.comment}</p>
                                     </div>
                                 </div>

@@ -298,7 +298,7 @@
                                     <tr>
                                         <td>${movie.movieID}</td>
                                         <td>
-                                            <img src="${movie.posterUrl}" alt="poster" class="img-thumbnail">
+                                            <img src="${pageContext.request.contextPath}/pic/${movie.posterUrl}" alt="poster" class="img-thumbnail">
                                         </td>
                                         <td class="text-left text-accent fw-bold">${movie.title}</td>
                                         <td>${movie.genre}</td>
